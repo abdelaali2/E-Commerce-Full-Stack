@@ -40,10 +40,11 @@ urlpatterns = [
     path('swagger', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('admin/', admin.site.urls),
-    path('users/', include('users.urls')),
-    path('users/', include('django.contrib.auth.urls')),
+    path('Users/', include('Users.urls')),
+    path('', include('Cart.urls')),
+    path('Users/', include('django.contrib.auth.urls')),
     path('', include('Category.urls')),
     path('', include('Product.urls')),
-    path('', include('orders.urls')),
+    path('', include('Orders.urls')),
 ]
 

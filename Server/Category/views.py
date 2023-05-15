@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 @api_view(['GET', 'POST'])
 @csrf_exempt
-def category_list(request):
+def Category_list(request):
     if request.method == 'GET':
         categories = Category.objects.all()
         serializer = CategorySerializer(categories, many=True)
@@ -21,9 +21,9 @@ def category_list(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def category_detail(request, pk):
+def Category_detail(request, pk):
     try:
-        category = Category.objects.get(pk=pk)
+        Category = Category.objects.get(pk=pk)
     except Category.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 

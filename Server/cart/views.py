@@ -20,23 +20,23 @@ def cart_list(request):
 @api_view(['GET', 'PUT', 'DELETE'])
 def cart_detail(request, cart_id):
     try:
-        cart = Cart.objects.get(pk=cart_id)
+        Cart = Cart.objects.get(pk=cart_id)
     except Cart.DoesNotExist:
         return Response(status=404)
 
     if request.method == 'GET':
-        serializer = CartSerializer(cart)
+        serializer = CartSerializer(Cart)
         return Response(serializer.data)
 
     elif request.method == 'PUT':
-        serializer = CartSerializer(cart, data=request.data)
+        serializer = CartSerializer(Cart, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
     elif request.method == 'DELETE':
-        cart.delete()
+        Cart.delete()
         return Response(status=204)
 
 @api_view(['POST'])
