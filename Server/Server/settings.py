@@ -28,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Set APPEND_SLASH to False to disable automatic appending of slashes
+APPEND_SLASH = False
 
 # Application definition
 
