@@ -1,15 +1,12 @@
 from django.db import models
-from Category.models import Category
-
-# Create your models here.
+from category.models import Category
 
 class Product(models.Model):
-    name = models.CharField(max_length=200)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
-    Category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    description = models.TextField(blank=True, null=True)
-    in_stock = models.BooleanField(default=True)
-    entry_date = models.DateTimeField(auto_now_add=True, editable=False)
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
 
     def __str__(self):
         return self.name
