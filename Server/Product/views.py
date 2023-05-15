@@ -1,29 +1,38 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
 from .models import Product
-from rest_framework import generics
 from .serializers import ProductSerializer
-from rest_framework.permissions import IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
 
-# Create your views here.
+@api_view(['GET', 'POST'])
+def product_list(request):
+    if request.method == 'GET':
+        products = Product.objects.all()
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = ProductSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ProductList(generics.ListAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated]
+@api_view(['GET', 'PUT', 'DELETE'])
+def product_detail(request, pk):
+    try:
+        product = Product.objects.get(pk=pk)
+    except Product.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["name", "price"]
-
-
-class ProductListPerCategory(generics.ListAPIView):
-    serializer_class = ProductSerializer
-
-    def get_queryset(self):
-        category_name = self.kwargs["category_name"]
-        queryset = Product.objects.filter(Category__name__iexact=category_name)
-        return queryset
-
+    if request.method == 'GET':
+        serializer = ProductSerializer(Product)
+        return Response(serializer.data)
+    elif request.method == 'PUT':
+        serializer = ProductSerializer(Product, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        Product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
