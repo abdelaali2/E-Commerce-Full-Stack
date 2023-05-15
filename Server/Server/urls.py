@@ -1,5 +1,5 @@
 """
-URL configuration for ecommerce project.
+URL configuration for Server project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -42,8 +42,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
     path('users/', include('django.contrib.auth.urls')),
-    path('', include('category.urls')),
-    path('', include('product.urls')),
+    path('', include('Category.urls')),
+    path('', include('Product.urls')),
     path('', include('orders.urls')),
 ]
 

@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('product', '0001_initial'),
+        ('Product', '0001_initial'),
     ]
 
     operations = [
@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('total_price', models.DecimalField(decimal_places=2, max_digits=10)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='product.product')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Product.Product')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),

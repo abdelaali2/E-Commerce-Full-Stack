@@ -28,14 +28,14 @@ def category_detail(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = CategorySerializer(category)
+        serializer = CategorySerializer(Category)
         return Response(serializer.data)
     elif request.method == 'PUT':
-        serializer = CategorySerializer(category, data=request.data)
+        serializer = CategorySerializer(Category, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
-        category.delete()
+        Category.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
