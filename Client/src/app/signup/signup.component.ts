@@ -10,7 +10,11 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./signup.component.scss'],
 })
 export class SignupComponent {
-  constructor(private signupService: SignupService, private router: Router) {}
+  constructor(
+    private signupService: SignupService,
+    private router: Router,
+    private cookieService: CookieService
+  ) {}
 
   user: User = {
     first_name: 'ibrahim',
@@ -32,7 +36,7 @@ export class SignupComponent {
     }
 
     this.signupService.signup(this.user)?.subscribe((cookie) => {
-      document.cookie = `sessionid=${cookie};`;
+      this.cookieService.set('sessionid', cookie);
       this.router.navigate(['']);
     });
   }

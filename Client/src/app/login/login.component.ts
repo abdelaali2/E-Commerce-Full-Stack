@@ -14,12 +14,16 @@ export class LoginComponent {
   csrfToken: string = '';
   loginError: boolean = false;
 
-  constructor(private loginService: LoginService, private router: Router) {}
+  constructor(
+    private loginService: LoginService,
+    private router: Router,
+    private cookieService: CookieService
+  ) {}
 
   onSubmit() {
     const user = { username: this.username, password: this.password };
     this.loginService.login(user).subscribe((cookie) => {
-      document.cookie = `sessionid=${cookie}; expires=1.0 Day`;
+      this.cookieService.set('sessionid', cookie);
       this.router.navigate(['']);
     });
   }

@@ -7,3 +7,11 @@ export interface User {
   password2: string;
   is_dealer: boolean;
 }
+
+export interface UserProfile {
+  first_name: string;
+  last_name: string;
+  email: string;
+  username: string;
+  is_dealer: boolean;
+}

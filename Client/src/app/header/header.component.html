@@ -20,14 +20,32 @@
                     <a class="nav-link" routerLinkActive="active" routerLink="/posts">Posts</a>
                 </li>
             </ul>
-            <ul class="navbar-nav row">
-                <li class="nav-item">
-                    <a class="nav-link btn btn-outline-primary col-md-6 m-1" routerLink="/user/signup">Sign Up</a>
-                </li>
-                <li class="nav-item">
-                    <button class="btn btn-primary col-md-6 m-1" type="button" routerLink="user/login">Login</button>
-                </li>
-            </ul>
+            <div *ngIf="loginFlag; then loggingOutCallToAction; else loggingInCallToAction"></div>
+            <ng-template #loggingInCallToAction>
+                <ul class="navbar-nav row">
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-primary col-md-6 m-1" routerLink="/user/signup">Sign Up</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-primary col-md-6 m-1" type="button"
+                            routerLink="user/login">Login</button>
+                    </li>
+                </ul>
+            </ng-template>
+            <ng-template #loggingOutCallToAction>
+                <ul class="navbar-nav row">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Hello, {{loggedInUser.username|uppercase}}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item">Profile</a>
+                            <a class="dropdown-item">Sign Out</a>
+                        </div>
+                    </li>
+                </ul>
+            </ng-template>
         </div>
     </div>
 </nav>
