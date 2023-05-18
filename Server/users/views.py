@@ -1,44 +1,46 @@
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
-from rest_framework.authtoken.models import Token
+from django.http import JsonResponse
+from rest_framework.decorators import api_view, permission_classes
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, logout
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
-@api_view(['POST'])
-def login_user(request):
-    if request.method == 'POST':
-        username = request.data.get('username')
-        password = request.data.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
-        else:
-            return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        
-        
-@api_view(['POST'])
-def logout_user(request):
-    logout(request)
-    return Response({'detail': 'Logged out successfully.'}, status=status.HTTP_200_OK)
-
-@api_view(['POST'])
-def register_user(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.data)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=password)
-            login(request, user)
-            return Response({'detail': 'Registration successful.'}, status=status.HTTP_201_CREATED)
-        else:
-            return Response({'detail': 'Registration failed.', 'error': form.errors}, status=status.HTTP_400_BAD_REQUEST)
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def register(request):
+    print("Registering")
+    form = UserCreationForm(request.POST)
+    if form.is_valid():
+        user = form.save()
+        login(request, user)
+        response = JsonResponse(
+            {"status": "success", "token": request.session.session_key}
+        )
+        return response
     else:
-        form = UserCreationForm()
-    return Response({'form': form}, status=status.HTTP_200_OK)
+        return JsonResponse({"status": "error", "errors": form.errors})
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def login_view(request):
+    print("login view")
+    form = AuthenticationForm(request, request.POST)
+    if form.is_valid():
+        user = form.get_user()
+        login(request, user)
+        response = JsonResponse(
+            {"status": "success", "token": request.session.session_key}
+        )
+        return response
+    else:
+        return JsonResponse({"status": "error", "errors": form.errors})
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def logout_view(request):
+    logout(request)
+    response = JsonResponse({"status": "success"})
+    response.delete_cookie("sessionid")
+    return response

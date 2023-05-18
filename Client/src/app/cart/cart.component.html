@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12" *ngFor="let cart of cartIdList">
+      <p>{{ cart.id }}</p>
+      <p>{{ cart.created_at }}</p>
+      <p>{{ cart.updated_at }}</p>
+    </div>
+  </div>
+</div>
+<h2>Login</h2>
+<form (ngSubmit)="onSubmit()">
+  <div>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" [(ngModel)]="username">
+  </div>
+  <div>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" [(ngModel)]="password">
+  </div>
+  <button type="submit">Login</button>
+  {{username}} {{password}} 
+</form>
