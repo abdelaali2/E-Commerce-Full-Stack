@@ -68,6 +68,22 @@ SESSION_COOKIE_AGE = 86400  # 1 day in seconds
 
 # End of Login & Signup Configurations.
 
+# increases the risk of XSS attacks, so make sure to use appropriate security measures.
+SESSION_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SAMESITE = None
+CORS_ALLOW_ALL_ORIGINS = True
+SESSION_COOKIE_SECURE = True
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:4200",
+]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 ROOT_URLCONF = "Server.urls"
 
 TEMPLATES = [
@@ -96,14 +112,14 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "ecommerce_fullstack",
-        "USER": "root",
-        "PASSWORD": "1234",
+        "USER": "admin",
+        "PASSWORD": "admin",
         "HOST": "localhost",
         "PORT": "3306",
     }
 }
 
-
+AUTH_USER_MODEL = 'Users.CustomUser'
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -156,5 +172,10 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
-    ]
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
 }
