@@ -3,12 +3,12 @@
     <form (ngSubmit)="onSubmit()" #signupForm="ngForm">
         <div class="form-group">
             <label for="firstName">First Name</label>
-            <input type="text" class="form-control" id="firstName" name="firstName" [(ngModel)]="user.firstName"
+            <input type="text" class="form-control" id="firstName" name="firstName" [(ngModel)]="user.first_name"
                 required>
         </div>
         <div class="form-group">
             <label for="lastName">Last Name</label>
-            <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="user.lastName" required>
+            <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="user.last_name" required>
         </div>
         <div class="form-group">
             <label for="email">Email</label>
@@ -19,14 +19,18 @@
             <input type="text" class="form-control" id="username" name="username" [(ngModel)]="user.username" required>
         </div>
         <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" name="password" [(ngModel)]="user.password"
+            <label for="password1">Password</label>
+            <input type="password" class="form-control" id="password1" name="password1" [(ngModel)]="user.password1"
                 required>
         </div>
         <div class="form-group">
-            <label for="confirmPassword">Confirm Password</label>
-            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
-                [(ngModel)]="user.confirmPassword" required>
+            <label for="password2">Confirm Password</label>
+            <input type="password" class="form-control" id="password2" name="password2" [(ngModel)]="user.password2"
+                required>
+        </div>
+        <div class="form-group">
+            <label for="is_dealer">Do you want to sell products with us?</label>
+            <input type="checkbox" class="mx-4" id="is_dealer" name="is_dealer" [(ngModel)]="user.is_dealer">
         </div>
         <button type="submit" class="btn btn-primary" [disabled]="!signupForm.form.valid">Signup</button>
     </form>
