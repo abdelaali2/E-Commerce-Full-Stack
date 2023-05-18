@@ -39,11 +39,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework.authtoken",
-    "users",
+    "Users",
     "Category",
     "Product",
-    "orders",
+    "Orders",
     "drf_yasg",
+    "Cart",
 ]
 
 MIDDLEWARE = [
@@ -112,14 +113,14 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "ecommerce_fullstack",
-        "USER": "admin",
-        "PASSWORD": "admin",
+        "USER": "root",
+        "PASSWORD": "1234",
         "HOST": "localhost",
         "PORT": "3306",
     }
 }
 
-AUTH_USER_MODEL = 'Users.CustomUser'
+AUTH_USER_MODEL = "Users.CustomUser"
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
