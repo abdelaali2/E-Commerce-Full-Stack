@@ -17,8 +17,8 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 def order_list(request):    
     print(request.user)
     user = request.user
-    orders = Order.objects.filter(user=user)
-    serializer = OrderSerializer(orders, many=True)
+    Orders = Order.objects.filter(user=user)
+    serializer = OrderSerializer(Orders, many=True)
     return JsonResponse(serializer.data, safe=False)
 
 @api_view(['GET'])
