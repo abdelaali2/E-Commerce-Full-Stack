@@ -43,21 +43,31 @@ INSTALLED_APPS = [
     "Category",
     "Product",
     "Orders",
-    "Cart",
     "drf_yasg",
-    "corsheaders",
+    "Cart",
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+# Login & Signup Configurations:
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:2203",
+    "http://localhost:4200",
+]
+
+SESSION_COOKIE_AGE = 86400  # 1 day in seconds
+
+# End of Login & Signup Configurations.
 
 # increases the risk of XSS attacks, so make sure to use appropriate security measures.
 SESSION_COOKIE_HTTPONLY = False
@@ -103,14 +113,14 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "ecommerce_fullstack",
-        "USER": "admin",
-        "PASSWORD": "admin",
+        "USER": "root",
+        "PASSWORD": "1234",
         "HOST": "localhost",
         "PORT": "3306",
     }
 }
 
-AUTH_USER_MODEL = 'Users.CustomUser'
+AUTH_USER_MODEL = "Users.CustomUser"
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -160,6 +170,9 @@ REST_FRAMEWORK = {
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ],
