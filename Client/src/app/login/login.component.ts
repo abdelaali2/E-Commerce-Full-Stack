@@ -22,8 +22,10 @@ export class LoginComponent {
 
   onSubmit() {
     const user = { username: this.username, password: this.password };
-    this.loginService.login(user).subscribe((cookie) => {
-      this.cookieService.set('sessionid', cookie);
+    this.loginService.login(user).subscribe(({ sessionid, csrftoken }) => {
+      console.log("csrftoken", csrftoken);
+      this.cookieService.set('sessionid', sessionid);
+      this.cookieService.set('csrftoken', csrftoken);
       this.router.navigate(['']);
     });
   }

@@ -21,8 +21,6 @@ export class GetLoggedInUserService {
       sameSite: 'None',
     };
 
-    console.log('before sending the request');
-
     return this.httpClient.get<UserProfile>(this.getUserURL, {
       headers,
       params,

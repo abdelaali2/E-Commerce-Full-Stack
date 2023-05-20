@@ -26,8 +26,9 @@ export class HeaderComponent {
 
   ngOnInit(): void {
     this.loginFlag = Boolean(this.cookieService.get('sessionid') || false);
-
-    this.getUser();
+    if (this.loginFlag) {
+      this.getUser();
+    }
   }
 
   getUser(): void {
@@ -37,7 +38,11 @@ export class HeaderComponent {
       .getUserBySessionId(sessionid)
       .subscribe((res) => {
         this.loggedInUser = res;
-        console.log('loggedInUser', this.loggedInUser);
+        // console.log('loggedInUser', this.loggedInUser);
       });
+  }
+
+  logout() {
+    const sessionid = this.cookieService.get('sessionid');
   }
 }
