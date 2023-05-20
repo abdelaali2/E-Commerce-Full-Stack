@@ -9,10 +9,8 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-  username: string = '';
-  password: string = '';
-  csrfToken: string = '';
-  loginError: boolean = false;
+  username: string = 'ibrahim';
+  password: string = 'P@ssw0rd11';
 
   constructor(
     private loginService: LoginService,
@@ -20,13 +18,23 @@ export class LoginComponent {
     private cookieService: CookieService
   ) {}
 
+  // // TODO: handle wrong login credentials before redirection.
+
   onSubmit() {
     const user = { username: this.username, password: this.password };
-    this.loginService.login(user).subscribe(({ sessionid, csrftoken }) => {
-      console.log("csrftoken", csrftoken);
-      this.cookieService.set('sessionid', sessionid);
-      this.cookieService.set('csrftoken', csrftoken);
-      this.router.navigate(['']);
-    });
+    this.loginService
+      .login(user)
+      .subscribe(({ sessionid, csrftoken, success }) => {
+        console.log('success', success);
+
+        if (success) {
+          // this.cookieService.set('sessionid', sessionid);
+          // this.cookieService.set('csrftoken', csrftoken);
+          this.router.navigate(['']);
+        } else {
+          // TODO: enhance UI
+          alert('Invalid username or password!');
+        }
+      });
   }
 }

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { GetLoggedInUserService } from '../Services/get-logged-in-user.service';
 import { CookieService } from 'ngx-cookie-service';
 import { UserProfile } from '../Models/user';
+import { LogoutService } from '../Services/logout.service';
 
 @Component({
   selector: 'app-header',
@@ -11,7 +12,8 @@ import { UserProfile } from '../Models/user';
 export class HeaderComponent {
   constructor(
     private getLoggedInUserService: GetLoggedInUserService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private logoutService: LogoutService
   ) {}
 
   loginFlag: boolean = false;
@@ -43,6 +45,8 @@ export class HeaderComponent {
   }
 
   logout() {
-    const sessionid = this.cookieService.get('sessionid');
+    this.logoutService.logoutUser().subscribe((response) => {
+      console.log('response', response);
+    });
   }
 }

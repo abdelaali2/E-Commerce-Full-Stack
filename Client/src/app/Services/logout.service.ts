@@ -1,19 +1,36 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { ResponseFromDjango } from '../Models/response-from-django';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LogoutService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(
+    private httpClient: HttpClient,
+    private cookieService: CookieService
+  ) {}
 
   logoutURL: string = 'http://localhost:8000/users/logout/';
 
-  // logutUser():Observable<ResponseFromDjango>{
+  logoutUser() {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    });
 
-    
-  //   return null;
-  // }
+    const options = {
+      headers: headers,
+      Cookie: `csrftoken=${this.cookieService.get('csrftoken')};`,
+    };
+
+    return this.httpClient.post(this.logoutURL, '', options).pipe(
+      map((response) => {
+        console.log('response', response);
+
+        return response;
+      })
+    );
+  }
 }

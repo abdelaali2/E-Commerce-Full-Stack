@@ -10,9 +10,10 @@ import { LoginComponent } from './login/login.component';
 import { FormsModule } from '@angular/forms';
 import { SignupComponent } from './signup/signup.component';
 import { UserComponent } from './user/user.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { CartComponent } from './cart/cart.component';
+import { LoggingInterceptor } from './Interceptors/HttpInterceptor';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,10 @@ import { CartComponent } from './cart/cart.component';
     FormsModule,
     HttpClientModule,
   ],
-  providers: [CookieService],
+  providers: [
+    CookieService,
+    { provide: HTTP_INTERCEPTORS, useClass: LoggingInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent, HeaderComponent],
 })
 export class AppModule {}
