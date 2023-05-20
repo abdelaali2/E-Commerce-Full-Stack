@@ -1,13 +1,15 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { UserProfile } from '../Models/user';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GetLoggedInUserService {
   constructor(private httpClient: HttpClient) {}
+  loggedInUser = new EventEmitter<UserProfile>();
+  loginFlag = new EventEmitter<boolean>();
 
   getUserURL: string = 'http://localhost:8000/users/get-user/';
 

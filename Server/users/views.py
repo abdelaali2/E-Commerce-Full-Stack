@@ -19,21 +19,21 @@ def login_view(request):
         login(request, user)
         response = JsonResponse(
             {
-                "Success": True,
+                "success": True,
                 "sessionid": request.session.session_key,
                 "csrftoken": csrf.get_token(request),
             }
         )
         return response
     else:
-        return JsonResponse({"Success": False, "error": form.errors})
+        return JsonResponse({"success": False, "error": form.errors})
 
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def logout_view(request):
     logout(request)
-    response = JsonResponse({"Success": True})
+    response = JsonResponse({"success": True})
     response.delete_cookie("sessionid")
     return response
 
@@ -48,14 +48,14 @@ def signup(request):
         login(request, user)
         response = JsonResponse(
             {
-                "Success": True,
+                "success": True,
                 "sessionid": request.session.session_key,
                 "csrftoken": csrf.get_token(),
             }
         )
         return response
     else:
-        return JsonResponse({"Success": False, "errors": form.errors})
+        return JsonResponse({"success": False, "errors": form.errors})
 
 
 class CustomUserCreationForm(UserCreationForm):

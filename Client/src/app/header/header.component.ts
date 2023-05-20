@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, SimpleChanges } from '@angular/core';
 import { GetLoggedInUserService } from '../Services/get-logged-in-user.service';
 import { CookieService } from 'ngx-cookie-service';
 import { UserProfile } from '../Models/user';
+import { LoginService } from '../Services/login.service';
 
 @Component({
   selector: 'app-header',
@@ -11,35 +12,40 @@ import { UserProfile } from '../Models/user';
 export class HeaderComponent {
   constructor(
     private getLoggedInUserService: GetLoggedInUserService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private loginService: LoginService
   ) {}
 
   loginFlag: boolean = false;
 
-  loggedInUser: UserProfile = {
-    username: '',
-    first_name: '',
-    last_name: '',
-    email: '',
-    is_dealer: false,
-  };
+  loggedInUser!: UserProfile;
 
   ngOnInit(): void {
-    this.loginFlag = Boolean(this.cookieService.get('sessionid') || false);
-    if (this.loginFlag) {
-      this.getUser();
-    }
+    // logged before
+    this.getUser();
+    // first time login
+    this.getLoggedInUserService.loggedInUser.subscribe(
+      (user) => (this.loggedInUser = user)
+    );
+    this.getLoggedInUserService.loginFlag.subscribe((flag) => {
+      this.loginFlag = flag;
+    });
   }
 
   getUser(): void {
     // after the header is loaded we should check if the user is logged in
     const sessionid = this.cookieService.get('sessionid');
-    this.getLoggedInUserService
-      .getUserBySessionId(sessionid)
-      .subscribe((res) => {
-        this.loggedInUser = res;
-        // console.log('loggedInUser', this.loggedInUser);
-      });
+    if (sessionid) {
+      this.getLoggedInUserService
+        .getUserBySessionId(sessionid)
+        .subscribe((res) => {
+          this.loggedInUser = res;
+          this.loginFlag = true;
+          // console.log('loggedInUser', this.loggedInUser);
+        });
+    } else {
+      console.log('Bad request');
+    }
   }
 
   logout() {
