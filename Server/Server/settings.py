@@ -113,8 +113,8 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "ecommerce_fullstack",
-        "USER": "root",
-        "PASSWORD": "1234",
+        "USER": "admin",
+        "PASSWORD": "admin",
         "HOST": "localhost",
         "PORT": "3306",
     }
