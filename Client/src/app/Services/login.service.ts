@@ -39,7 +39,7 @@ export class LoginService {
         const resp = response as ResponseFromDjango;
         console.log(resp);
 
-        return resp.sessionid;
+        return resp;
       })
     );
   }

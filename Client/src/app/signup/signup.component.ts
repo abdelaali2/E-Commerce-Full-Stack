@@ -35,9 +35,12 @@ export class SignupComponent {
       return;
     }
 
-    this.signupService.signup(this.user)?.subscribe((cookie) => {
-      this.cookieService.set('sessionid', cookie);
-      this.router.navigate(['']);
-    });
+    this.signupService
+      .signup(this.user)
+      ?.subscribe(({ sessionid, csrftoken }) => {
+        this.cookieService.set('sessionid', sessionid);
+        this.cookieService.set('csrftoken', csrftoken);
+        this.router.navigate(['']);
+      });
   }
 }

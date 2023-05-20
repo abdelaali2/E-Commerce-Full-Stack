@@ -1,12 +1,12 @@
 from django import forms
 from django.http import JsonResponse
-from rest_framework import status
+from django.middleware import csrf
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import login, logout
-from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.sessions.models import Session
+from .models import CustomUser
 
 
 @api_view(["POST"])
@@ -18,12 +18,15 @@ def login_view(request):
         user = form.get_user()
         login(request, user)
         response = JsonResponse(
-            {"Success": True, "sessionid": request.session.session_key}
+            {
+                "Success": True,
+                "sessionid": request.session.session_key,
+                "csrftoken": csrf.get_token(request),
+            }
         )
         return response
     else:
         return JsonResponse({"Success": False, "error": form.errors})
-
 
 
 @api_view(["POST"])
@@ -35,8 +38,6 @@ def logout_view(request):
     return response
 
 
-
-
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def signup(request):
@@ -46,11 +47,16 @@ def signup(request):
         user = form.save()
         login(request, user)
         response = JsonResponse(
-            {"Success": True, "sessionid": request.session.session_key}
+            {
+                "Success": True,
+                "sessionid": request.session.session_key,
+                "csrftoken": csrf.get_token(),
+            }
         )
         return response
     else:
         return JsonResponse({"Success": False, "errors": form.errors})
+
 
 class CustomUserCreationForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True)
@@ -58,20 +64,21 @@ class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(max_length=254, required=True)
 
     class Meta:
-        model = User
-        fields = (
+        model = CustomUser
+        fields = [
             "username",
             "first_name",
             "last_name",
             "email",
             "password1",
             "password2",
-        )
+            "is_dealer",
+        ]
+
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def get_user_data(request):
-    print (request)
     sessionid = request.GET.get("sessionid")
 
     try:
@@ -88,8 +95,8 @@ def get_user_data(request):
 
     # Look up the user object based on the user ID
     try:
-        user = User.objects.get(id=user_id)
-    except User.DoesNotExist:
+        user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
         return JsonResponse({"error": "Invalid user ID"}, status=400)
 
     # Return the user data as a JSON response
@@ -98,7 +105,7 @@ def get_user_data(request):
         "username": user.username,
         "email": user.email,
         "first_name": user.first_name,
-        "last_name": user.last_name
-        # Add any additional user data you want to include
+        "last_name": user.last_name,
+        "is_dealer": user.is_dealer,
     }
     return JsonResponse(user_data)

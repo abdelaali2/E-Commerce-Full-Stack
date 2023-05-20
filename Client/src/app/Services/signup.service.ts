@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ResponseFromDjango } from '../Models/response-from-django';
 import { map } from 'rxjs';
+import { User } from '../Models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -9,9 +10,9 @@ import { map } from 'rxjs';
 export class SignupService {
   constructor(private httpClient: HttpClient) {}
 
-  signupURL: string = 'http://localhost:8000/users/signup/';
+  signup(credentials: User) {
+    const signupURL = 'http://localhost:8000/users/signup/';
 
-  signup(credentials: any) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
     });
@@ -23,7 +24,7 @@ export class SignupService {
       .set('first_name', credentials.first_name)
       .set('last_name', credentials.last_name)
       .set('email', credentials.email)
-      // .set('is_dealer', credentials.is_dealer || false)
+      .set('is_dealer', credentials.is_dealer || false)
       .set('sameSite', 'None')
       .toString();
 
@@ -31,12 +32,12 @@ export class SignupService {
       headers: headers,
     };
 
-    return this.httpClient.post(this.signupURL, body, options).pipe(
+    return this.httpClient.post(signupURL, body, options).pipe(
       map((response) => {
         const resp = response as ResponseFromDjango;
         console.log(resp);
 
-        return resp.sessionid;
+        return resp;
       })
     );
   }
