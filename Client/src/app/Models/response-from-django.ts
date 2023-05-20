@@ -1,5 +1,5 @@
 export interface ResponseFromDjango {
-  status: string;
+  success: boolean;
   sessionid: string;
   csrftoken: string;
 }
