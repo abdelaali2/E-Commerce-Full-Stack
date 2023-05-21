@@ -1,6 +1,7 @@
 from django import forms
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.middleware import csrf
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import login, logout
@@ -17,13 +18,9 @@ def login_view(request):
     if form.is_valid():
         user = form.get_user()
         login(request, user)
-        response = JsonResponse(
-            {
-                "success": True,
-                "sessionid": request.session.session_key,
-                "csrftoken": csrf.get_token(request),
-            }
-        )
+        response = HttpResponse(status=204)
+        response["Content-Length"] = "0"
+        response["Content-Type"] = "application/json"
         response.set_cookie(
             key="csrftoken",
             value=csrf.get_token(request),
@@ -33,15 +30,16 @@ def login_view(request):
         response["Access-Control-Allow-Credentials"] = "true"
         return response
     else:
-        return JsonResponse({"success": False, "error": form.errors})
+        return JsonResponse({"error": form.errors})
 
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+# @ensure_csrf_cookie
 def logout_view(request):
     print("request", request)
     logout(request)
-    response = JsonResponse({"success": True})
+    response = HttpResponse(status=204)
     response.delete_cookie("sessionid")
     response.delete_cookie("csrftoken")
     return response
@@ -55,22 +53,26 @@ def signup(request):
     if form.is_valid():
         user = form.save()
         login(request, user)
-        response = JsonResponse(
-            {
-                "success": True,
-                "sessionid": request.session.session_key,
-                "csrftoken": csrf.get_token(),
-            }
+        response = HttpResponse(status=204)
+        response["Content-Length"] = "0"
+        response["Content-Type"] = "application/json"
+        response.set_cookie(
+            key="csrftoken",
+            value=csrf.get_token(request),
+            secure=True,
+            max_age=86400,
         )
+        response["Access-Control-Allow-Credentials"] = "true"
         return response
     else:
-        return JsonResponse({"success": False, "errors": form.errors})
+        return JsonResponse({"errors": form.errors})
 
 
 class CustomUserCreationForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=30, required=True)
     email = forms.EmailField(max_length=254, required=True)
+    is_dealer = forms.BooleanField(initial=False, required=True)
 
     class Meta:
         model = CustomUser
@@ -88,7 +90,7 @@ class CustomUserCreationForm(UserCreationForm):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def get_user_data(request):
-    sessionid = request.GET.get("sessionid")
+    sessionid = request.COOKIES.get("sessionid")
 
     try:
         session = Session.objects.get(session_key=sessionid)
@@ -108,8 +110,8 @@ def get_user_data(request):
     except CustomUser.DoesNotExist:
         return JsonResponse({"error": "Invalid user ID"}, status=400)
 
-    # Return the user data as a JSON response
-    user_data = {
+    # Return the user profile
+    user_profile = {
         "id": user.id,
         "username": user.username,
         "email": user.email,
@@ -117,4 +119,4 @@ def get_user_data(request):
         "last_name": user.last_name,
         "is_dealer": user.is_dealer,
     }
-    return JsonResponse(user_data)
+    return JsonResponse(user_profile)

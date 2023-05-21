@@ -1,8 +1,9 @@
 import { Component, SimpleChanges } from '@angular/core';
 import { GetLoggedInUserService } from '../Services/get-logged-in-user.service';
 import { CookieService } from 'ngx-cookie-service';
-import { UserProfile } from '../Models/user';
+import { UserProfile, newUserProfile } from '../Models/user';
 import { LogoutService } from '../Services/logout.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -11,9 +12,10 @@ import { LogoutService } from '../Services/logout.service';
 })
 export class HeaderComponent {
   constructor(
-    private getLoggedInUserService: GetLoggedInUserService,
+    private router: Router,
     private cookieService: CookieService,
-    private logoutService: LogoutService
+    private logoutService: LogoutService,
+    private getLoggedInUserService: GetLoggedInUserService
   ) {}
 
   loginFlag: boolean = false;
@@ -36,18 +38,27 @@ export class HeaderComponent {
     // after the header is loaded we should check if the user is logged in
     const sessionid = this.cookieService.get('sessionid');
     if (sessionid) {
-      this.getLoggedInUserService
-        .getUserBySessionId(sessionid)
-        .subscribe((res) => {
-          this.loggedInUser = res;
-          this.loginFlag = true;
-        });
+      this.getLoggedInUserService.getUserProfile().subscribe((res: any) => {
+        this.loggedInUser = res.body as UserProfile;
+        this.loginFlag = true;
+      });
     }
   }
 
   logout() {
-    this.logoutService.logoutUser().subscribe((response) => {
-      console.log('response', response);
+    this.logoutService.logoutUser().subscribe(({ ok }) => {
+      if (ok) {
+        this.router.navigate(['']);
+
+        this.getLoggedInUserService.getUserProfile().subscribe(() => {
+          this.getLoggedInUserService.loggedInUser.emit(newUserProfile);
+          this.getLoggedInUserService.loginFlag.emit(true);
+        });
+      } else {
+        // TODO: handle wrong login credentials before redirection.
+        // TODO: enhance UI
+        alert(`couldn't log you out! Please try again`);
+      }
     });
   }
 }

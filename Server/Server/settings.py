@@ -50,36 +50,48 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
+    # "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "Server.cors_middleware.CorsMiddleware",
 ]
 
 # Login & Signup Configurations:
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:2203",
-    "http://localhost:4200",
-]
-
 SESSION_COOKIE_AGE = 86400  # 1 day in seconds
-
-# End of Login & Signup Configurations.
 
 # increases the risk of XSS attacks, so make sure to use appropriate security measures.
 SESSION_COOKIE_HTTPONLY = False
 SESSION_COOKIE_SAMESITE = None
-CORS_ALLOW_ALL_ORIGINS = True
 SESSION_COOKIE_SECURE = True
 
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = False
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:4200",
+    "http://localhost:2203",
+]
+
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:4200",
+    "http://localhost:2203",
 ]
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "withcredentials",
+    "observe",
+]
+
+# End of Login & Signup Configurations.
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",

@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
-import { map } from 'rxjs/operators';
-import { ResponseFromDjango } from '../Models/response-from-django';
+import { httpOptions } from '../Models/http-options';
 
 @Injectable({
   providedIn: 'root',
@@ -20,27 +19,12 @@ export class LoginService {
   }
 
   login(credentials: any) {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded',
-    });
-
     const body = new HttpParams()
       .set('username', credentials.username)
       .set('password', credentials.password)
       .set('sameSite', 'None')
       .toString();
 
-    const options = {
-      headers: headers,
-    };
-
-    return this.httpClient.post(this.loginURL, body, options).pipe(
-      map((response) => {
-        const resp = response as ResponseFromDjango;
-        console.log(resp);
-
-        return resp;
-      })
-    );
+    return this.httpClient.post(this.loginURL, body, httpOptions);
   }
 }

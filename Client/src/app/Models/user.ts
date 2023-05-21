@@ -15,3 +15,11 @@ export interface UserProfile {
   username: string;
   is_dealer: boolean;
 }
+
+export const newUserProfile: UserProfile = {
+  first_name: '',
+  last_name: '',
+  email: '',
+  username: '',
+  is_dealer: false,
+};

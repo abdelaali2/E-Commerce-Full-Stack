@@ -23,5 +23,8 @@
         "titleBar.inactiveForeground": "#e7e7e799"
     },
     "peacock.color": "#152d54",
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "cSpell.words": [
+        "yasg"
+    ]
 }
