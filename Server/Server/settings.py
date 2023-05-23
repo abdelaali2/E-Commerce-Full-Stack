@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "Orders",
     "drf_yasg",
     "Cart",
+    "reviews",
 ]
 
 MIDDLEWARE = [
@@ -69,6 +70,8 @@ SESSION_COOKIE_AGE = 86400  # 1 day in seconds
 
 # End of Login & Signup Configurations.
 
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_HEADERS = ["x-sessionid", "content-type", "x-csrftoken"]
 # increases the risk of XSS attacks, so make sure to use appropriate security measures.
 SESSION_COOKIE_HTTPONLY = False
 SESSION_COOKIE_SAMESITE = None
@@ -164,17 +167,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication"
-    ],
-}
-
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.BasicAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",

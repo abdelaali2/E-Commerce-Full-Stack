@@ -1,13 +1,12 @@
-from django import forms
 from django.http import JsonResponse
 from django.middleware import csrf
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import  AuthenticationForm
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import login, logout
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.sessions.models import Session
 from .models import CustomUser
-
+from .serializers import CustomUserCreationForm
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -56,24 +55,6 @@ def signup(request):
         return response
     else:
         return JsonResponse({"success": False, "errors": form.errors})
-
-
-class CustomUserCreationForm(UserCreationForm):
-    first_name = forms.CharField(max_length=30, required=True)
-    last_name = forms.CharField(max_length=30, required=True)
-    email = forms.EmailField(max_length=254, required=True)
-
-    class Meta:
-        model = CustomUser
-        fields = [
-            "username",
-            "first_name",
-            "last_name",
-            "email",
-            "password1",
-            "password2",
-            "is_dealer",
-        ]
 
 
 @api_view(["GET"])
