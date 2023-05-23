@@ -39,59 +39,27 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework.authtoken",
+    "corsheaders",
+    "drf_yasg",
     "Users",
     "Category",
     "Product",
     "Orders",
-    "drf_yasg",
     "Cart",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    # "corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "Server.cors_middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "Server.cors_middleware.CorsMiddleware",
 ]
 
-# Login & Signup Configurations:
-
-SESSION_COOKIE_AGE = 86400  # 1 day in seconds
-
-# increases the risk of XSS attacks, so make sure to use appropriate security measures.
-SESSION_COOKIE_HTTPONLY = False
-SESSION_COOKIE_SAMESITE = None
-SESSION_COOKIE_SECURE = True
-
-CSRF_COOKIE_SECURE = False
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:4200",
-    "http://localhost:2203",
-]
-
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:4200",
-    "http://localhost:2203",
-]
-
-CORS_ALLOW_HEADERS = [
-    "accept",
-    "accept-encoding",
-    "authorization",
-    "content-type",
-    "dnt",
-    "origin",
-    "user-agent",
-    "withcredentials",
-    "observe",
-]
-
-# End of Login & Signup Configurations.
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
@@ -192,3 +160,36 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
 }
+
+# Login & Signup Configurations:
+
+SESSION_COOKIE_AGE = 86400  # 1 day in seconds
+SESSION_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SAMESITE = None
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:4200",
+    "http://localhost:2203",
+]
+
+CORS_ORIGIN_WHITELIST = (
+    "http://localhost:4200",
+    "http://localhost:2203",
+)
+CORS_ALLOW_HEADERS = (
+    "accept",
+    "authorization",
+    "content-type",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "accept-encoding",
+    "dnt",
+    "origin",
+    "withcredentials",
+    "observe",
+)
+
+CORS_ALLOW_CREDENTIALS = True
+
+# End of Login & Signup Configurations.

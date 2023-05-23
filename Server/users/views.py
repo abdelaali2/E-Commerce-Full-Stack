@@ -35,13 +35,22 @@ def login_view(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-# @ensure_csrf_cookie
+@ensure_csrf_cookie
 def logout_view(request):
     print("request", request)
+    print("session", request.session)
     logout(request)
     response = HttpResponse(status=204)
+    response["Access-Control-Allow-Credentials"] = "true"
     response.delete_cookie("sessionid")
-    response.delete_cookie("csrftoken")
+    print("response.cookies before", response.cookies)
+    response.set_cookie(
+        key="csrftoken",
+        value="",
+        secure=True,
+        max_age=0,
+    )
+    print("response.cookies after", response.cookies)
     return response
 
 
@@ -88,7 +97,7 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 @api_view(["GET"])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def get_user_data(request):
     sessionid = request.COOKIES.get("sessionid")
 
