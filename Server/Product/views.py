@@ -1,24 +1,57 @@
 from rest_framework.decorators import api_view, permission_classes
+from django.views.decorators.csrf import ensure_csrf_cookie
+
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Product
 from .serializers import ProductSerializer
 from django.shortcuts import get_object_or_404
+from rest_framework.pagination import PageNumberPagination
+from django.contrib.sessions.models import Session
+from Users.models import CustomUser
+from Category.models import Category
+
+
+class ProductListPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = "page_size"
+    max_page_size = 100
+
+    def get_paginated_response(self, data):
+        return Response(
+            {
+                "links": {
+                    "next": self.get_next_link(),
+                    "previous": self.get_previous_link(),
+                },
+                "count": self.page.paginator.count,
+                "page_size": self.page_size,
+                "results": data,
+            }
+        )
 
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def product_list(request):
+    paginator = ProductListPagination()
     products = Product.objects.all()
-    serializer = ProductSerializer(products, many=True)
-    return Response(serializer.data)
+    sort_by = request.GET.get("sort_by", "-id")
+    products = products.order_by(sort_by)
+
+    paginated_products = paginator.paginate_queryset(products, request)
+    serializer = ProductSerializer(paginated_products, many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def product_create(request):
-    if not request.user.is_dealer:
+    sessionid = request.META.get("HTTP_X_SESSIONID")
+    user_id = Session.objects.get(pk=sessionid).get_decoded().get("_auth_user_id")
+    user = CustomUser.objects.get(pk=user_id)
+    if user.is_dealer != True:
         Response(status=status.HTTP_401_UNAUTHORIZED)
     serializer = ProductSerializer(data=request.data)
     if serializer.is_valid():
@@ -28,24 +61,44 @@ def product_create(request):
 
 
 @api_view(["GET", "PUT", "DELETE"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def product_detail(request, pk):
+    product = get_object_or_404(Product, pk=pk)
     if request.method == "GET":
-        product = Product.objects.filter(pk=pk).first()
         serializer = ProductSerializer(product)
         return Response(serializer.data)
-    
-    
-    if request.method == "PUT" or request.method == "DELETE":
-        if not request.user.is_dealer:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-        
-    
-    product = get_object_or_404(Product, dealer=request.user)
 
-    
+    sessionid = request.META.get("HTTP_X_SESSIONID")
+    user_id = Session.objects.get(pk=sessionid).get_decoded().get("_auth_user_id")
+    user = get_object_or_404(CustomUser, pk=user_id)
+
+    if request.method == "PUT" or request.method == "DELETE":
+        if user.is_dealer != False:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
     if request.method == "PUT":
-        serializer = ProductSerializer(product, data=request.data)
+        # Make sure category exist
+        category_list = request.data.get(
+            "category", [category.id for category in product.category.all()]
+        )
+        categories = [
+            get_object_or_404(Category, pk=category_id) for category_id in category_list
+        ]
+        get_object_or_404(CustomUser, pk=request.data.get("dealer", product.dealer.id))
+
+        data = {
+            "name": request.data.get("name", product.name),
+            "description": request.data.get("description", product.description),
+            "price": request.data.get("price", product.price),
+            "discount": request.data.get("discount", product.discount),
+            "category": [cat.id for cat in categories],
+            "dealer": request.data.get("dealer", product.dealer.id),
+        }
+
+        serializer = ProductSerializer(
+            product,
+            data=data,
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
