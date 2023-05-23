@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { UserProfile } from '../Models/user';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { httpOptions } from '../Models/http-options';
 
 @Injectable({
   providedIn: 'root',
@@ -13,19 +13,7 @@ export class GetLoggedInUserService {
 
   getUserURL: string = 'http://localhost:8000/users/get-user/';
 
-  getUserBySessionId(sessionId: string): Observable<UserProfile> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded',
-    });
-
-    const params = {
-      sessionid: sessionId,
-      sameSite: 'None',
-    };
-
-    return this.httpClient.get<UserProfile>(this.getUserURL, {
-      headers,
-      params,
-    });
+  getUserProfile(): any {
+    return this.httpClient.get(this.getUserURL, httpOptions);
   }
 }

@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ResponseFromDjango } from '../Models/response-from-django';
+import { httpOptions } from '../Models/http-options';
 
 @Injectable({
   providedIn: 'root',
@@ -11,9 +10,7 @@ export class LogoutService {
 
   logoutURL: string = 'http://localhost:8000/users/logout/';
 
-  // logutUser():Observable<ResponseFromDjango>{
-
-    
-  //   return null;
-  // }
+  logoutUser() {
+    return this.httpClient.post(this.logoutURL, '', httpOptions);
+  }
 }
