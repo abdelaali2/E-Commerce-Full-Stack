@@ -15,6 +15,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { CartComponent } from './cart/cart.component';
 import { LoggingInterceptor } from './Interceptors/HttpInterceptor';
 import { GetLoggedInUserService } from './Services/get-logged-in-user.service';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { GetLoggedInUserService } from './Services/get-logged-in-user.service';
     SignupComponent,
     UserComponent,
     CartComponent,
+    UserProfileComponent,
   ],
   imports: [
     BrowserModule,

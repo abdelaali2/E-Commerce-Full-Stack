@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { ResponseFromDjango } from '../Models/response-from-django';
 import { map } from 'rxjs';
 import { User } from '../Models/user';
+import { httpOptions } from '../Models/http-options';
 
 @Injectable({
   providedIn: 'root',
@@ -13,10 +14,6 @@ export class SignupService {
   signup(credentials: User) {
     const signupURL = 'http://localhost:8000/users/signup/';
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded',
-    });
-
     const body = new HttpParams()
       .set('username', credentials.username)
       .set('password1', credentials.password1)
@@ -25,20 +22,8 @@ export class SignupService {
       .set('last_name', credentials.last_name)
       .set('email', credentials.email)
       .set('is_dealer', credentials.is_dealer || false)
-      .set('sameSite', 'None')
       .toString();
 
-    const options = {
-      headers: headers,
-    };
-
-    return this.httpClient.post(signupURL, body, options).pipe(
-      map((response) => {
-        const resp = response as ResponseFromDjango;
-        console.log(resp);
-
-        return resp;
-      })
-    );
+    return this.httpClient.post(signupURL, body, httpOptions);
   }
 }
