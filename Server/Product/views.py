@@ -8,9 +8,9 @@ from .models import Product
 from .serializers import ProductSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
-from django.contrib.sessions.models import Session
 from Users.models import CustomUser
 from Category.models import Category
+from utils.get_user_id import get_user_by_sessionid
 
 
 class ProductListPagination(PageNumberPagination):
@@ -46,11 +46,14 @@ def product_list(request):
 
 
 @api_view(["POST"])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
+@ensure_csrf_cookie
 def product_create(request):
-    sessionid = request.META.get("HTTP_X_SESSIONID")
-    user_id = Session.objects.get(pk=sessionid).get_decoded().get("_auth_user_id")
-    user = CustomUser.objects.get(pk=user_id)
+    try:
+        user_obj = get_user_by_sessionid(request.COOKIES.get("sessionid"))
+    except Exception as e:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+    user = CustomUser.objects.get(pk=user_obj.id)
     if user.is_dealer != True:
         Response(status=status.HTTP_401_UNAUTHORIZED)
     serializer = ProductSerializer(data=request.data)
@@ -60,17 +63,25 @@ def product_create(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET", "PUT", "DELETE"])
+@api_view(["GET"])
 @permission_classes([AllowAny])
-def product_detail(request, pk):
+def product_details(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == "GET":
         serializer = ProductSerializer(product)
         return Response(serializer.data)
 
-    sessionid = request.META.get("HTTP_X_SESSIONID")
-    user_id = Session.objects.get(pk=sessionid).get_decoded().get("_auth_user_id")
-    user = get_object_or_404(CustomUser, pk=user_id)
+
+@api_view(["PUT", "DELETE"])
+@permission_classes([IsAuthenticated])
+def product_adjust(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    try:
+        user_obj = get_user_by_sessionid(request.COOKIES.get("sessionid"))
+    except Exception as e:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    user = get_object_or_404(CustomUser, pk=user_obj.id)
 
     if request.method == "PUT" or request.method == "DELETE":
         if user.is_dealer != False:

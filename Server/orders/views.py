@@ -7,11 +7,9 @@ from .models import Order
 from .serializers import OrderSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import authentication_classes, permission_classes
-from rest_framework.authentication import TokenAuthentication
 
 
 @api_view(["GET"])
-@authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def order_list(request):
     print(request.user)
@@ -22,9 +20,6 @@ def order_list(request):
 
 
 @api_view(["GET"])
-@authentication_classes(
-    [TokenAuthentication]
-)
 @permission_classes([IsAuthenticated])
 def order_detail(request, pk):
     user = request.user

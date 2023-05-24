@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
+import { httpOptions } from 'src/app/Models/http-options';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,7 @@ export class ProductsService {
   headers = new HttpHeaders({
     'X-SessionId': this.cookieService.get('sessionid'),
   });
-  
+
   constructor(
     private httpClient: HttpClient,
     private cookieService: CookieService
@@ -29,23 +30,23 @@ export class ProductsService {
     return this.httpClient.get<any>(`${this.productsURL}/${id}/`);
   }
 
-  putProduct(id: number) {
+  putProduct(id: number, data = {}) {
     return this.httpClient.put<any>(
-      `${this.productsURL}/${id}/`,
-      {},
-      { headers: this.headers }
+      `${this.productsURL}/adjust/${id}/`,
+      data,
+      httpOptions
     );
   }
 
   createProduct(productData: any) {
-    return this.httpClient.post(`${this.productsURL}/add/`, productData, {
-      headers: this.headers,
-    });
+    return this.httpClient.post(
+      `${this.productsURL}/add/`,
+      productData,
+      httpOptions
+    );
   }
 
   deleteProduct(id: number) {
-    return this.httpClient.delete(`${this.productsURL}/${id}/`, {
-      headers: this.headers,
-    });
+    return this.httpClient.delete(`${this.productsURL}/adjust/${id}/`, httpOptions);
   }
 }

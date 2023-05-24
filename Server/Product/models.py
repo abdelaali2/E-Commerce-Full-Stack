@@ -2,7 +2,6 @@ from django.db import models
 from Category.models import Category
 from Users.models import CustomUser
 
-
 class Product(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
@@ -10,6 +9,7 @@ class Product(models.Model):
     discount = models.DecimalField(max_digits=2, decimal_places=2, null=True, blank=True)
     category = models.ManyToManyField(Category)
     dealer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    #TODO: add image field
 
     
     @property
