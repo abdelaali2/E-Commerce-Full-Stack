@@ -1,7 +1,5 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ResponseFromDjango } from '../Models/response-from-django';
-import { map } from 'rxjs';
 import { User } from '../Models/user';
 import { httpOptions } from '../Models/http-options';
 
@@ -14,16 +12,21 @@ export class SignupService {
   signup(credentials: User) {
     const signupURL = 'http://localhost:8000/users/signup/';
 
-    const body = new HttpParams()
-      .set('username', credentials.username)
-      .set('password1', credentials.password1)
-      .set('password2', credentials.password2)
-      .set('first_name', credentials.first_name)
-      .set('last_name', credentials.last_name)
-      .set('email', credentials.email)
-      .set('is_dealer', credentials.is_dealer || false)
-      .toString();
-
-    return this.httpClient.post(signupURL, body, httpOptions);
+    const formData = new FormData();
+    formData.append('username', credentials.username);
+    formData.append('password1', credentials.password1);
+    formData.append('password2', credentials.password2);
+    formData.append('first_name', credentials.first_name);
+    formData.append('last_name', credentials.last_name);
+    formData.append('email', credentials.email);
+    formData.append('is_dealer', (credentials.is_dealer || false).toString());
+    if (credentials.profilePicture) {
+      formData.append(
+        'profile_picture',
+        credentials.profilePicture,
+        credentials.profilePicture.name
+      );
+    }
+    return this.httpClient.post(signupURL, formData, httpOptions);
   }
 }

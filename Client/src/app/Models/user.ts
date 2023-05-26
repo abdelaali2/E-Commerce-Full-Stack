@@ -6,7 +6,7 @@ export interface User {
   password1: string;
   password2: string;
   is_dealer: boolean;
-  photo?: File;
+  profilePicture?: File;
 }
 
 export interface UserProfile {
@@ -15,7 +15,7 @@ export interface UserProfile {
   email: string;
   username: string;
   is_dealer: boolean;
-  photo?: File;
+  profile_picture?: File;
 }
 
 export const newUserProfile: UserProfile = {

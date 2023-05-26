@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { User, UserProfile } from '../Models/user';
+import { User } from '../Models/user';
 import { SignupService } from '../Services/signup.service';
 import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
 import { GetLoggedInUserService } from '../Services/get-logged-in-user.service';
 
 @Component({
@@ -25,7 +24,7 @@ export class SignupComponent {
     password1: 'P@ssw0rd11',
     password2: 'P@ssw0rd11',
     is_dealer: false,
-    photo: undefined,
+    profilePicture: undefined,
   };
 
   // TODO: handle password confirmation criteria.
@@ -50,8 +49,8 @@ export class SignupComponent {
   }
 
   onFileSelected(event: any) {
-    this.user.photo = event.target.files[0];
-    console.log('this.user.photo', this.user.photo);
+    this.user.profilePicture = event.target.files[0];
+    console.log('this.user.profilePicture', this.user.profilePicture);
 
     // const file = event.target.files[0];
     // const reader = new FileReader();

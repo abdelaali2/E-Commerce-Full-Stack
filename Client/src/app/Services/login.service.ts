@@ -16,7 +16,12 @@ export class LoginService {
       .set('password', credentials.password)
       .set('sameSite', 'None')
       .toString();
+    const modifiedOptions = { ...httpOptions };
+    modifiedOptions.headers = modifiedOptions.headers.set(
+      'Content-Type',
+      'application/x-www-form-urlencoded'
+    );
 
-    return this.httpClient.post(this.loginURL, body, httpOptions);
+    return this.httpClient.post(this.loginURL, body, modifiedOptions);
   }
 }

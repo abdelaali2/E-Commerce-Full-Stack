@@ -23,19 +23,16 @@ export class HeaderComponent {
   loggedInUser!: UserProfile;
 
   ngOnInit(): void {
-    // first time login
     this.getLoggedInUserService.loggedInUser.subscribe(
       (user) => (this.loggedInUser = user)
     );
     this.getLoggedInUserService.loginFlag.subscribe((flag) => {
       this.loginFlag = flag;
     });
-    // logged before
     this.getUser();
   }
 
   getUser(): void {
-    // after the header is loaded we should check if the user is logged in
     const sessionid = this.cookieService.get('sessionid');
     if (sessionid) {
       this.getLoggedInUserService.getUserProfile();
@@ -43,6 +40,7 @@ export class HeaderComponent {
   }
 
   logout() {
+    // TODO: prompt the user to confirm the logout action
     this.logoutService.logoutUser().subscribe(({ ok }) => {
       if (ok) {
         this.router.navigate(['']);

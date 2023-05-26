@@ -17,6 +17,7 @@ export class GetLoggedInUserService {
     return this.httpClient
       .get(this.getUserURL, httpOptions)
       .subscribe(({ ok, body }) => {
+        console.log('ok, body', ok, body);
         if (ok) {
           this.loggedInUser.emit(body as UserProfile);
           this.loginFlag.emit(true);
