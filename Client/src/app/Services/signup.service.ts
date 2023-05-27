@@ -20,11 +20,11 @@ export class SignupService {
     formData.append('last_name', credentials.last_name);
     formData.append('email', credentials.email);
     formData.append('is_dealer', (credentials.is_dealer || false).toString());
-    if (credentials.profilePicture) {
+    if (credentials.profile_picture) {
       formData.append(
         'profile_picture',
-        credentials.profilePicture,
-        credentials.profilePicture.name
+        credentials.profile_picture,
+        credentials.profile_picture.name
       );
     }
     return this.httpClient.post(signupURL, formData, httpOptions);

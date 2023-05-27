@@ -10,7 +10,6 @@ export class AppComponent {
   title = 'Client';
   constructor(private csrfService: ObtainCsrfService) {}
   ngOnInit(): void {
-    console.log('started');
     this.csrfService.obtainCSRFToken();
   }
 }

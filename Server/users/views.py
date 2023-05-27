@@ -1,14 +1,14 @@
 import base64
-from django import forms
 from django.http import HttpResponse, JsonResponse
 from django.middleware import csrf
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect, csrf_exempt
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.forms import AuthenticationForm
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import login, logout
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.sessions.models import Session
-from .forms import CustomUserCreationForm
+from .forms import CustomUserChangeForm, CustomUserCreationForm
 from .models import CustomUser
 
 
@@ -63,11 +63,6 @@ def logout_view(request):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def signup(request):
-    # Get the uploaded image file
-    uploaded_file = request.FILES["profile_picture"]
-
-    # Print the size of the file in bytes
-    print(f"Uploaded file size: {uploaded_file.size} bytes")
     form = CustomUserCreationForm(request.POST, request.FILES)
     print("request.FILES", request.FILES)
     if form.is_valid():
@@ -76,6 +71,18 @@ def signup(request):
         return JsonResponse({}, status=204)
     else:
         print("form.errors", form.errors)
+        return JsonResponse({"errors": form.errors}, status=400)
+
+
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+def update_user(request):
+    user = request.user
+    form = CustomUserChangeForm(request.POST, request.FILES, instance=user)
+    if form.is_valid():
+        form.save()
+        return JsonResponse({}, status=204)
+    else:
         return JsonResponse({"errors": form.errors}, status=400)
 
 
@@ -108,10 +115,11 @@ def get_user_data(request):
             encoded_picture = base64.b64encode(f.read()).decode("utf-8")
     user_profile = {
         "id": user.id,
-        "username": user.username,
         "email": user.email,
-        "first_name": user.first_name,
+        "username": user.username,
         "last_name": user.last_name,
+        "first_name": user.first_name,
+        "joined_at": user.date_joined,
         "is_dealer": user.is_dealer,
         "profile_picture": encoded_picture,
     }

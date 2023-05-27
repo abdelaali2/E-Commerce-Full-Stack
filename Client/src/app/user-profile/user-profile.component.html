@@ -1,1 +1,99 @@
-<p>user-profile works!</p>
+<div *ngIf="loginFlag; then userPage; else loggingInCallToAction"></div>
+<ng-template #loggingInCallToAction>
+    <div class="mx-auto text-center">
+        <h4>You're not logged in, Please login or Signup if it's your first time</h4>
+        <ul class="navbar-nav row d-flex justify-content-center align-items-center">
+            <li class="nav-item">
+                <a class="btn btn-outline-primary callToAction m-1" routerLink="/user/signup">Sign Up</a>
+            </li>
+            <li class="nav-item">
+                <button class="btn btn-primary callToAction m-1" type="button" routerLink="/user/login">Login</button>
+            </li>
+        </ul>
+    </div>
+</ng-template>
+<ng-template #userPage>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-12 order-md-1 order-1">
+                <div class="card">
+                    <div id="avatar-area"
+                        style="background-image: url('data:image/png;base64,{{ currentUser.profile_picture }}')">
+                        <label for="file-upload" class="custom-button">
+                            <div id="upload-overlay" *ngIf="showEditSection">
+                                <svg xmlns="http://www.w3.org/2000/svg" id="upload-logo" height="300px"
+                                    viewBox="-17.5 -17.5 60 60" width="300px" fill="#ffffff">
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path
+                                        d="M18 20H4V6h9V4H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-9h-2v9zm-7.79-3.17l-1.96-2.36L5.5 18h11l-3.54-4.71zM20 4V1h-2v3h-3c.01.01 0 2 0 2h3v2.99c.01.01 2 0 2 0V6h3V4h-3z" />
+                                </svg>
+                            </div>
+                        </label>
+                    </div>
+                    <input id="file-upload" type="file" style="display: none;" (change)="onNewImageSelected($event)">
+
+                    <div class="card-body row text-center">
+                        <h5 class="card-title user-name-title col-12">{{ currentUser.first_name |
+                            capitalizeFirstLetter
+                            }} {{
+                            currentUser.last_name
+                            |
+                            capitalizeFirstLetter }}</h5>
+                        <h5 class="text-muted">@{{currentUser.username}}</h5>
+                        <small>Member since {{currentUser.joined_at.split("T")[0]}}</small>
+                        <button class="btn btn-secondary edit-btn col-6 mx-auto" (click)="toggleEdit()">Edit Profile
+                        </button>
+                    </div>
+                </div>
+                <!-- TODO: Implement Edit Profile feature -->
+                <section *ngIf="showEditSection">
+                    <form (ngSubmit)="onSubmitChanges()" #signupForm="ngForm">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName"
+                                [(ngModel)]="updatedUser.first_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName"
+                                [(ngModel)]="updatedUser.last_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                [(ngModel)]="updatedUser.email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" name="username"
+                                [(ngModel)]="updatedUser.username" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary"
+                            [disabled]="!signupForm.form.valid">Update</button>
+                    </form>
+                </section>
+            </div>
+            <div class="col-md-8 col-12 order-md-2 order-2">
+                <ul class="nav nav-tabs px-4">
+                    <li class="nav-item">
+                        <a routerLink="/user/my-profile/my-orders" routerLinkActive="active" ngActive
+                            class="nav-link link-secondary btn active" aria-current="page">My Orders</a>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a routerLink="/user/my-profile/my-payments" routerLinkActive="active" ngActive class="nav-link link-secondary btn">My Payments</a>
+                    </li> -->
+                    <li class="nav-item">
+                        <a routerLink="/user/my-profile/my-reviews" routerLinkActive="active" ngActive
+                            class="nav-link link-secondary btn">My Reviews</a>
+                    </li>
+                    <li class="nav-item">
+                        <!-- TODO: make this tab shown to dealers only -->
+                        <a routerLink="/user/my-profile/my-products" routerLinkActive="active" ngActive
+                            class="nav-link link-secondary btn" *ngIf="currentUser.is_dealer">My Products</a>
+                    </li>
+                </ul>
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </div>
+</ng-template>

@@ -24,7 +24,7 @@ export class SignupComponent {
     password1: 'P@ssw0rd11',
     password2: 'P@ssw0rd11',
     is_dealer: false,
-    profilePicture: undefined,
+    profile_picture: undefined,
   };
 
   // TODO: handle password confirmation criteria.
@@ -49,19 +49,7 @@ export class SignupComponent {
   }
 
   onFileSelected(event: any) {
-    this.user.profilePicture = event.target.files[0];
-    console.log('this.user.profilePicture', this.user.profilePicture);
-
-    // const file = event.target.files[0];
-    // const reader = new FileReader();
-    // reader.readAsDataURL(file);
-    // reader.onload = () => {
-    //   const base64 = reader.result.toString().split(',')[1];
-    //   const formData = new FormData();
-    //   formData.append('file', base64);
-    //   this.http.post('/api/upload', formData).subscribe((response) => {
-    //     console.log(response);
-    //   });
-    // };
+    this.user.profile_picture = event.target.files[0];
+    console.log('this.user.profile_picture', this.user.profile_picture);
   }
 }

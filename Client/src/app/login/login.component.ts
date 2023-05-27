@@ -24,7 +24,6 @@ export class LoginComponent {
     this.loginService.login(user).subscribe(({ ok, body }) => {
       if (ok) {
         this.router.navigate(['']);
-
         this.getLoggedInUserService.getUserProfile();
       } else {
         // TODO: handle wrong login credentials before redirection.

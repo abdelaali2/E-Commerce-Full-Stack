@@ -5,7 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from './login/login.component';
 import { FormsModule } from '@angular/forms';
 import { SignupComponent } from './signup/signup.component';
@@ -16,6 +15,10 @@ import { CartComponent } from './cart/cart.component';
 import { LoggingInterceptor } from './Interceptors/HttpInterceptor';
 import { GetLoggedInUserService } from './Services/get-logged-in-user.service';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { CapitalizeFirstLetterPipe } from './Pipes/capitalize-first-letter';
+import { UserOrdersComponent } from './user-orders/user-orders.component';
+import { UserReviewsComponent } from './user-reviews/user-reviews.component';
+import { UserProductsComponent } from './user-products/user-products.component';
 
 @NgModule({
   declarations: [
@@ -27,14 +30,12 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     UserComponent,
     CartComponent,
     UserProfileComponent,
+    CapitalizeFirstLetterPipe,
+    UserOrdersComponent,
+    UserReviewsComponent,
+    UserProductsComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    NgbModule,
-    FormsModule,
-    HttpClientModule,
-  ],
+  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   providers: [
     CookieService,
     GetLoggedInUserService,

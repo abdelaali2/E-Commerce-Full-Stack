@@ -24,12 +24,12 @@
             <ng-template #loggingInCallToAction>
                 <ul class="navbar-nav row">
                     <li class="nav-item">
-                        <a class="nav-link btn btn-outline-primary callToAction m-1" routerLink="/user/signup">Sign
+                        <a class="btn btn-outline-primary callToAction m-1" routerLink="/user/signup">Sign
                             Up</a>
                     </li>
                     <li class="nav-item">
                         <button class="btn btn-primary callToAction m-1" type="button"
-                            routerLink="user/login">Login</button>
+                            routerLink="/user/login">Login</button>
                     </li>
                 </ul>
             </ng-template>
@@ -38,7 +38,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            Hello, {{loggedInUser.username|uppercase}}
+                            Hello, {{loggedInUser.username | capitalizeFirstLetter}}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" routerLink="/user/my-profile">Profile</a>
