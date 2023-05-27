@@ -29,6 +29,13 @@
                 required>
         </div>
         <div class="form-group">
+            <label for="profilePicture" class="d-block">Profile Picture
+                <small>(max 5 MBs.)</small>
+            </label>
+            <input type="file" class="form-control-file" id="profilePicture" name="profilePicture" accept="image/*"
+                maxFileSize="5242880" (change)="onFileSelected($event)">
+        </div>
+        <div class="form-group">
             <label for="is_dealer">Do you want to sell products with us?</label>
             <input type="checkbox" class="mx-4" id="is_dealer" name="is_dealer" [(ngModel)]="user.is_dealer">
         </div>

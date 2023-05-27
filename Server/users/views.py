@@ -1,14 +1,33 @@
-from django import forms
+import base64
 from django.http import HttpResponse, JsonResponse
 from django.middleware import csrf
+from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import login, logout
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.sessions.models import Session
+from .forms import CustomUserChangeForm, CustomUserCreationForm
 from .models import CustomUser
 from .serializers import CustomUserCreationForm
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+@ensure_csrf_cookie
+def obtain_csrftoken(request):
+    response = HttpResponse(status=204)
+    response["Content-Length"] = "0"
+    response["Content-Type"] = "application/json"
+    response.set_cookie(
+        key="csrftoken",
+        value=csrf.get_token(request),
+        secure=True,
+        max_age=86400,
+    )
+    response["Access-Control-Allow-Credentials"] = "true"
+    return response
 
 
 @api_view(["POST"])
@@ -22,12 +41,6 @@ def login_view(request):
         response = HttpResponse(status=204)
         response["Content-Length"] = "0"
         response["Content-Type"] = "application/json"
-        response.set_cookie(
-            key="csrftoken",
-            value=csrf.get_token(request),
-            secure=True,
-            max_age=86400,
-        )
         response["Access-Control-Allow-Credentials"] = "true"
         return response
     else:
@@ -36,7 +49,6 @@ def login_view(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-@ensure_csrf_cookie
 def logout_view(request):
     print("request", request)
     print("session", request.session)
@@ -45,12 +57,6 @@ def logout_view(request):
     response["Access-Control-Allow-Credentials"] = "true"
     response.delete_cookie("sessionid")
     print("response.cookies before", response.cookies)
-    response.set_cookie(
-        key="csrftoken",
-        value="",
-        secure=True,
-        max_age=0,
-    )
     print("response.cookies after", response.cookies)
     return response
 
@@ -58,24 +64,27 @@ def logout_view(request):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def signup(request):
-    print("Registering")
-    form = CustomUserCreationForm(request.POST)
+    form = CustomUserCreationForm(request.POST, request.FILES)
+    print("request.FILES", request.FILES)
     if form.is_valid():
         user = form.save()
         login(request, user)
-        response = HttpResponse(status=204)
-        response["Content-Length"] = "0"
-        response["Content-Type"] = "application/json"
-        response.set_cookie(
-            key="csrftoken",
-            value=csrf.get_token(request),
-            secure=True,
-            max_age=86400,
-        )
-        response["Access-Control-Allow-Credentials"] = "true"
-        return response
+        return JsonResponse({}, status=204)
     else:
-        return JsonResponse({"errors": form.errors})
+        print("form.errors", form.errors)
+        return JsonResponse({"errors": form.errors}, status=400)
+
+
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+def update_user(request):
+    user = request.user
+    form = CustomUserChangeForm(request.POST, request.FILES, instance=user)
+    if form.is_valid():
+        form.save()
+        return JsonResponse({}, status=204)
+    else:
+        return JsonResponse({"errors": form.errors}, status=400)
 
 
 @api_view(["GET"])
@@ -102,12 +111,17 @@ def get_user_data(request):
         return JsonResponse({"error": "Invalid user ID"}, status=400)
 
     # Return the user profile
+    if user.profile_picture:
+        with open(user.profile_picture.path, "rb") as f:
+            encoded_picture = base64.b64encode(f.read()).decode("utf-8")
     user_profile = {
         "id": user.id,
-        "username": user.username,
         "email": user.email,
-        "first_name": user.first_name,
+        "username": user.username,
         "last_name": user.last_name,
+        "first_name": user.first_name,
+        "joined_at": user.date_joined,
         "is_dealer": user.is_dealer,
+        "profile_picture": encoded_picture,
     }
     return JsonResponse(user_profile)

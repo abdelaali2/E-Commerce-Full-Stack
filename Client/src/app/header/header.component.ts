@@ -23,37 +23,28 @@ export class HeaderComponent {
   loggedInUser!: UserProfile;
 
   ngOnInit(): void {
-    // logged before
-    this.getUser();
-    // first time login
-    this.getLoggedInUserService.loggedInUser.subscribe(
-      (user) => (this.loggedInUser = user)
-    );
+    this.getLoggedInUserService.loggedInUser.subscribe((user) => {
+      this.loggedInUser = user;
+    });
     this.getLoggedInUserService.loginFlag.subscribe((flag) => {
       this.loginFlag = flag;
     });
+    this.getUser();
   }
 
   getUser(): void {
-    // after the header is loaded we should check if the user is logged in
     const sessionid = this.cookieService.get('sessionid');
     if (sessionid) {
-      this.getLoggedInUserService.getUserProfile().subscribe((res: any) => {
-        this.loggedInUser = res.body as UserProfile;
-        this.loginFlag = true;
-      });
+      this.getLoggedInUserService.getUserProfile();
     }
   }
 
   logout() {
+    // TODO: prompt the user to confirm the logout action
     this.logoutService.logoutUser().subscribe(({ ok }) => {
       if (ok) {
         this.router.navigate(['']);
-
-        this.getLoggedInUserService.getUserProfile().subscribe(() => {
-          this.getLoggedInUserService.loggedInUser.emit(newUserProfile);
-          this.getLoggedInUserService.loginFlag.emit(true);
-        });
+        this.getLoggedInUserService.resetUserProfile();
       } else {
         // TODO: handle wrong login credentials before redirection.
         // TODO: enhance UI

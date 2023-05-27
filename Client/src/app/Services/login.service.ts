@@ -1,22 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { CookieService } from 'ngx-cookie-service';
 import { httpOptions } from '../Models/http-options';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoginService {
-  constructor(
-    private httpClient: HttpClient,
-    private cookieService: CookieService
-  ) {}
+  constructor(private httpClient: HttpClient) {}
 
   loginURL: string = 'http://localhost:8000/users/login/';
-
-  getAllTokens(): any {
-    return this.cookieService.getAll();
-  }
 
   login(credentials: any) {
     const body = new HttpParams()
@@ -24,7 +16,12 @@ export class LoginService {
       .set('password', credentials.password)
       .set('sameSite', 'None')
       .toString();
+    const modifiedOptions = { ...httpOptions };
+    modifiedOptions.headers = modifiedOptions.headers.set(
+      'Content-Type',
+      'application/x-www-form-urlencoded'
+    );
 
-    return this.httpClient.post(this.loginURL, body, httpOptions);
+    return this.httpClient.post(this.loginURL, body, modifiedOptions);
   }
 }

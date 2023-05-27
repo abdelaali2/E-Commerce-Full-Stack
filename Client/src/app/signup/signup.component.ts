@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { User } from '../Models/user';
 import { SignupService } from '../Services/signup.service';
 import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
+import { GetLoggedInUserService } from '../Services/get-logged-in-user.service';
 
 @Component({
   selector: 'app-signup',
@@ -13,7 +13,7 @@ export class SignupComponent {
   constructor(
     private signupService: SignupService,
     private router: Router,
-    private cookieService: CookieService
+    private getLoggedInUserService: GetLoggedInUserService
   ) {}
 
   user: User = {
@@ -24,6 +24,7 @@ export class SignupComponent {
     password1: 'P@ssw0rd11',
     password2: 'P@ssw0rd11',
     is_dealer: false,
+    profile_picture: undefined,
   };
 
   // TODO: handle password confirmation criteria.
@@ -35,12 +36,20 @@ export class SignupComponent {
       return;
     }
 
-    this.signupService
-      .signup(this.user)
-      ?.subscribe(({ sessionid, csrftoken }) => {
-        this.cookieService.set('sessionid', sessionid);
-        this.cookieService.set('csrftoken', csrftoken);
+    this.signupService.signup(this.user)?.subscribe(({ ok }) => {
+      if (ok) {
+        this.getLoggedInUserService.getUserProfile();
         this.router.navigate(['']);
-      });
+      } else {
+        // TODO: handle wrong login credentials before redirection.
+        // TODO: enhance UI
+        alert('Invalid username or password');
+      }
+    });
+  }
+
+  onFileSelected(event: any) {
+    this.user.profile_picture = event.target.files[0];
+    console.log('this.user.profile_picture', this.user.profile_picture);
   }
 }

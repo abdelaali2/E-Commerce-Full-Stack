@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-// import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 // Components
 import { AppComponent } from './app.component';
@@ -20,6 +19,11 @@ import { CartComponent } from './cart/cart.component';
 import { CookieService } from 'ngx-cookie-service';
 import { LoggingInterceptor } from './Interceptors/HttpInterceptor';
 import { GetLoggedInUserService } from './Services/get-logged-in-user.service';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { CapitalizeFirstLetterPipe } from './Pipes/capitalize-first-letter';
+import { UserOrdersComponent } from './user-orders/user-orders.component';
+import { UserReviewsComponent } from './user-reviews/user-reviews.component';
+import { UserProductsComponent } from './user-products/user-products.component';
 import { ProductsService } from './Services/productsServices/products.service';
 import { ReviewsService } from './Services/reviewsServices/reviews.service';
 import { OrdersComponent } from './orders/orders.component';
@@ -34,6 +38,11 @@ import { OrdersService } from './Services/ordersServices/orders.service';
     SignupComponent,
     UserComponent,
     CartComponent,
+    UserProfileComponent,
+    CapitalizeFirstLetterPipe,
+    UserOrdersComponent,
+    UserReviewsComponent,
+    UserProductsComponent,
     ProductsComponent,
     ReviewsComponent,
     OrdersComponent,
@@ -43,7 +52,10 @@ import { OrdersService } from './Services/ordersServices/orders.service';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    // NgbModule,
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
   ],
   providers: [
     CookieService,

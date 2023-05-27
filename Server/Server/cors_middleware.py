@@ -9,7 +9,7 @@ class CorsMiddleware:
         response["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
         response[
             "Access-Control-Allow-Headers"
-        ] = "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+        ] = "Origin, X-Requested-With, Content-Type, Accept, Authorization, X-CSRFToken"
         response["Access-Control-Allow-Credentials"] = "true"
 
         return response
