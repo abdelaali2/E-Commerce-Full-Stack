@@ -10,6 +10,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.sessions.models import Session
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 from .models import CustomUser
+from .serializers import CustomUserCreationForm
 
 
 @api_view(["GET"])

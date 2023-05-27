@@ -8,11 +8,11 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'price']
 
 class CartItemSerializer(serializers.ModelSerializer):
-    Product = ProductSerializer()
+    product = ProductSerializer(read_only=True)
     
     class Meta:
         model = CartItem
-        fields = ['id', 'Product', 'quantity']
+        fields = ['id', 'product', 'quantity']
 
 class CartSerializer(serializers.ModelSerializer):    
     class Meta:
