@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-// import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 // Components
 import { AppComponent } from './app.component';
@@ -42,19 +41,18 @@ import { ReviewsService } from './Services/reviewsServices/reviews.service';
     UserOrdersComponent,
     UserReviewsComponent,
     UserProductsComponent,
+    ProductsComponent,
+    ReviewsComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    ProductsComponent,
-    ReviewsComponent,
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    // NgbModule,
   ],
   providers: [
     CookieService,

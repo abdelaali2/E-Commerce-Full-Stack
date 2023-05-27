@@ -17,6 +17,7 @@ export class UserProfileComponent {
   showEditSection: boolean = true;
 
   // TODO: show the user profile after the user is logged in without hard refresh
+  // TODO: Email Confirmation.
 
   ngOnInit(): void {
     console.log('this.currentUser before subscribe', this.currentUser);
@@ -37,4 +38,6 @@ export class UserProfileComponent {
   onNewImageSelected(event: any) {
     this.updatedUser.profile_picture = event.target.files[0];
   }
+
+  onSubmitChanges() {}
 }

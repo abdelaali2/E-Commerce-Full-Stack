@@ -25,6 +25,7 @@
     "peacock.color": "#a216a5",
     "git.ignoreLimitWarning": true,
     "cSpell.words": [
+        "redoc",
         "yasg"
     ]
 }
