@@ -22,6 +22,8 @@ import { LoggingInterceptor } from './Interceptors/HttpInterceptor';
 import { GetLoggedInUserService } from './Services/get-logged-in-user.service';
 import { ProductsService } from './Services/productsServices/products.service';
 import { ReviewsService } from './Services/reviewsServices/reviews.service';
+import { OrdersComponent } from './orders/orders.component';
+import { OrdersService } from './Services/ordersServices/orders.service';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,7 @@ import { ReviewsService } from './Services/reviewsServices/reviews.service';
     CartComponent,
     ProductsComponent,
     ReviewsComponent,
+    OrdersComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,6 +50,7 @@ import { ReviewsService } from './Services/reviewsServices/reviews.service';
     GetLoggedInUserService,
     ProductsService,
     ReviewsService,
+    OrdersService,
     { provide: HTTP_INTERCEPTORS, useClass: LoggingInterceptor, multi: true },
   ],
   bootstrap: [AppComponent, HeaderComponent],

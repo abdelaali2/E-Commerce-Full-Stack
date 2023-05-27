@@ -75,7 +75,6 @@ def product_details(request, pk):
 @api_view(["PUT", "DELETE"])
 @permission_classes([IsAuthenticated])
 def product_adjust(request, pk):
-    product = get_object_or_404(Product, pk=pk)
     try:
         user_obj = get_user_by_sessionid(request.COOKIES.get("sessionid"))
     except Exception as e:
@@ -83,9 +82,10 @@ def product_adjust(request, pk):
 
     user = get_object_or_404(CustomUser, pk=user_obj.id)
 
-    if request.method == "PUT" or request.method == "DELETE":
-        if user.is_dealer != False:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+    product = get_object_or_404(Product, pk=pk, user=user)
+
+    if user.is_dealer == False:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     if request.method == "PUT":
         # Make sure category exist

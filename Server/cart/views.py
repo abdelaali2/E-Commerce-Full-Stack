@@ -12,6 +12,7 @@ from .serializers import CartSerializer, CartItemSerializer
 from rest_framework.permissions import IsAuthenticated
 from utils.get_user_id import get_user_by_sessionid
 from rest_framework import status
+from Cart.models import CartItem
 
 
 @api_view(["GET"])
@@ -43,6 +44,8 @@ def add_to_cart(request):
             serializer.save(cart=cart)
         except IntegrityError as e:
             return Response({"error": "IntegrityError: {}".format(str(e))}, status=400)
+        except Exception as e:
+            return Response({"error": "DoesNotExist: {}".format(str(e))}, status=400)
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
 
