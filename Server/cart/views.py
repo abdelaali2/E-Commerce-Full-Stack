@@ -13,6 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from utils.get_user_id import get_user_by_sessionid
 from rest_framework import status
 from Cart.models import CartItem
+from Product.models import Product
 
 
 @api_view(["GET"])
@@ -32,22 +33,40 @@ def cart_detail(request):
 @permission_classes([IsAuthenticated])
 @ensure_csrf_cookie
 def add_to_cart(request):
-    try:
-        user_obj = get_user_by_sessionid(request.COOKIES.get("sessionid"))
-    except Exception as e:
-        return Response(status=status.HTTP_403_FORBIDDEN)
+    user_obj = request.user
     cart = Cart.objects.get(user=user_obj.id)
 
-    serializer = CartItemSerializer(data=request.data)
-    if serializer.is_valid():
+    product = request.data.get("product")
+    quantity = request.data.get("quantity")
+
+    if not product:
+        return Response({"error": "Product field is required."}, status=400)
+
+    if not quantity:
+        return Response({"error": "Quantity field is required."}, status=400)
+
+    product = get_object_or_404(Product, pk=product)
+    try:
+        cartItem = CartItem.objects.get(product=product, cart=cart)
+    except Exception:
         try:
-            serializer.save(cart=cart)
-        except IntegrityError as e:
-            return Response({"error": "IntegrityError: {}".format(str(e))}, status=400)
+            CartItem.objects.create(
+                cart=cart, product=product, quantity=quantity
+            ).save()
         except Exception as e:
-            return Response({"error": "DoesNotExist: {}".format(str(e))}, status=400)
-        return Response(serializer.data, status=201)
-    return Response(serializer.errors, status=400)
+            return Response(
+                {"error": e, "id": str(product.id)}, status=status.HTTP_400_BAD_REQUEST
+            )
+        return Response(status=201)
+
+    cartItem.quantity += quantity
+    try:
+        cartItem.save()
+    except Exception as e:
+        return Response(
+            {"error": e, "id": str(product.id)}, status=status.HTTP_400_BAD_REQUEST
+        )
+    return Response(status=201)
 
 
 @api_view(["GET"])

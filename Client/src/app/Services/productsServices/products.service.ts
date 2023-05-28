@@ -1,16 +1,16 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { EventEmitter, Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
+import { Observable } from 'rxjs';
 import { httpOptions } from 'src/app/Models/http-options';
+import { ProductListResponse } from 'src/app/Models/products_models/product.models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductsService {
   productsURL = 'http://localhost:8000/products';
-  headers = new HttpHeaders({
-    'X-SessionId': this.cookieService.get('sessionid'),
-  });
+  modifiedProductsList = new EventEmitter();
 
   constructor(
     private httpClient: HttpClient,
@@ -23,7 +23,9 @@ export class ProductsService {
       page_size: pageSize,
       sort_by: sortBy,
     };
-    return this.httpClient.get<any[]>(this.productsURL, { params });
+    return this.httpClient.get(this.productsURL, {
+      params,
+    });
   }
 
   getProduct(id: number) {
@@ -47,6 +49,9 @@ export class ProductsService {
   }
 
   deleteProduct(id: number) {
-    return this.httpClient.delete(`${this.productsURL}/adjust/${id}/`, httpOptions);
+    return this.httpClient.delete(
+      `${this.productsURL}/adjust/${id}/`,
+      httpOptions
+    );
   }
 }

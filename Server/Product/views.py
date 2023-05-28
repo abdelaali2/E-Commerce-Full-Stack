@@ -82,7 +82,7 @@ def product_adjust(request, pk):
 
     user = get_object_or_404(CustomUser, pk=user_obj.id)
 
-    product = get_object_or_404(Product, pk=pk, user=user)
+    product = get_object_or_404(Product, pk=pk, dealer=user)
 
     if user.is_dealer == False:
         return Response(status=status.HTTP_401_UNAUTHORIZED)

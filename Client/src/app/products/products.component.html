@@ -1,1 +1,69 @@
-<p>products works!</p>
+<div class="container mt-4">
+  <div *ngIf="productsList && productsList.results.length > 0; else noProducts">
+    <div class="card">
+      <div class="card-header bg-primary text-white">Product List</div>
+      <div class="card-body">
+        <div class="row">
+          <div
+            class="col-12 col-md-6 col-lg-4"
+            *ngFor="let product of productsList.results"
+          >
+            <div class="card mb-4 h-100">
+              <div class="card-body d-flex flex-column justify-content-between">
+                <h5 class="card-title text-center mb-4">Product Details</h5>
+                <p class="card-text product-name">{{ product.name }}</p>
+                <p class="card-text">Quantity: {{ product.quantity }}</p>
+                <p class="card-text">Dealer: {{ product.dealer_name }}</p>
+                <h6 class="card-subtitle mb-2">Categories:</h6>
+                <div class="d-flex flex-wrap">
+                  <ng-container
+                    *ngFor="let category of product.categories; let last = last"
+                  >
+                    <span class="category-item"
+                      >#{{ replaceSpacesWithUnderscores(category.name) }}</span
+                    >
+                    <span *ngIf="!last" class="category-space">&nbsp;</span>
+                  </ng-container>
+                </div>
+                <div class="card-price">
+                  <p *ngIf="product.price" class="card-text">
+                    Price: {{ product.price | currency : "EGP" : true }}
+                  </p>
+                  <p *ngIf="product.discount > 0" class="card-text">
+                    Discount: {{ product.discount }}%
+                  </p>
+                  <p
+                    class="card-text discounted-price"
+                    *ngIf="product.discount > 0"
+                  >
+                    Discounted Price:
+                    {{
+                      product.price * (1 - product.discount)
+                        | currency : "EGP" : true
+                    }}
+                  </p>
+                </div>
+                <p
+                  *ngIf="errorMessage && errorMessage.id == product.id"
+                  class="error-message"
+                >
+                  {{ errorMessage.error }}
+                </p>
+                <button
+                  class="btn btn-primary mt-auto"
+                  (click)="addToCart({ product: product.id, quantity: 1 })"
+                >
+                  <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noProducts>
+  <p>No Products!</p>
+</ng-template>
