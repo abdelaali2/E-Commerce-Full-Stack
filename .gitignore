@@ -1,4 +1,4 @@
 # Root Directory
 .venv/
-.vscode/
+.vscode/*
 

@@ -1,20 +1,35 @@
-/*
-        data = {
-            "name": request.data.get("name", product.name),
-            "description": request.data.get("description", product.description),
-            "price": request.data.get("price", product.price),
-            "discount": request.data.get("discount", product.discount),
-            "Category": request.data.get("Category", product.Category.id),
-            "dealer": request.data.get("Category", product.dealer.id),
-        }
+export interface ProductCategory {
+  id: number;
+  name: string;
+  description: string;
+}
 
-*/
+export interface Product {
+  categories: ProductCategory[];
+  name: string;
+  description: string;
+  quantity: number;
+  id: number;
+  dealer: number;
+  dealer_name: string;
+}
 
-export interface IProduct{
-    name: string;
-    description: string;
-    price: number;
-    discount: number;
-    category: number;
-    dealer: number;
+export interface ProductListResponse {
+  links: {
+    next: string | null;
+    previous: string | null;
+  };
+  count: number;
+  page_size: number;
+  results: [
+    {
+      categories: ProductCategory[];
+      name: string;
+      description: string;
+      quantity: number;
+      id: number;
+      dealer: number;
+      dealer_name: string;
+    }
+  ];
 }

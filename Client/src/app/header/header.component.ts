@@ -23,13 +23,13 @@ export class HeaderComponent {
   loggedInUser!: UserProfile;
 
   ngOnInit(): void {
-    this.getLoggedInUserService.loggedInUser.subscribe((user) => {
-      this.loggedInUser = user;
-    });
-    this.getLoggedInUserService.loginFlag.subscribe((flag) => {
-      this.loginFlag = flag;
-    });
-    this.getUser();
+    // this.getLoggedInUserService.loggedInUser.subscribe((user) => {
+    //   this.loggedInUser = user;
+    // });
+    // this.getLoggedInUserService.loginFlag.subscribe((flag) => {
+    //   this.loginFlag = flag;
+    // });
+    // this.getUser();
   }
 
   getUser(): void {

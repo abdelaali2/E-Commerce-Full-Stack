@@ -20,6 +20,8 @@ class ProductSerializer(serializers.ModelSerializer):
             "id",
             "dealer",
             "dealer_name",
+            "price",
+            "discount",
         )
 
     def get_categories(self, obj):

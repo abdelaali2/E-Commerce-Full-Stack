@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { OrdersService } from '../Services/ordersServices/orders.service';
+import { OrderResponse } from '../Models/orders_models/orders.models';
+import { Subscription } from 'rxjs';
+import { CartService } from '../Services/cartServices/cart.service';
+import { ProductsService } from '../Services/productsServices/products.service';
 
 @Component({
   selector: 'app-orders',
@@ -7,23 +11,36 @@ import { OrdersService } from '../Services/ordersServices/orders.service';
   styleUrls: ['./orders.component.scss'],
 })
 export class OrdersComponent implements OnInit {
-  constructor(private ordersService: OrdersService) {}
+  ordersList!: OrderResponse[];
+  errorMessage!: string;
+
+  constructor(
+    private ordersService: OrdersService,
+    private productsService: ProductsService
+  ) {}
+
   ngOnInit(): void {
+    this.ordersService.orderModified.subscribe((_) => this.getOrders());
+    this.getOrders();
+  }
+
+  getOrders() {
     this.ordersService.getOrders().subscribe({
       next: (order) => {
-        console.log('getOrders >>> ', order);
+        this.ordersList = order.body as OrderResponse[];
+      },
+      error: (err) => {
+        console.log(err.error[0]);
+        this.ordersList = [];
       },
     });
+  }
 
-    this.ordersService.editPayment(1).subscribe({
-      next: (payment) => {
-        console.log('editPayment >>> ', payment);
-      },
-    });
-
-    this.ordersService.editShipment(2).subscribe({
-      next: (shipment) => {
-        console.log('editShipment >>> ', shipment);
+  deleteOrder(id: string) {
+    this.ordersService.deleteOrder(id).subscribe({
+      next: (response) => {
+        this.ordersService.orderModified.emit();
+        this.productsService.modifiedProductsList.emit();
       },
     });
   }
