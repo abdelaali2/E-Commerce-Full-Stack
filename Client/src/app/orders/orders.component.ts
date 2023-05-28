@@ -3,6 +3,7 @@ import { OrdersService } from '../Services/ordersServices/orders.service';
 import { OrderResponse } from '../Models/orders_models/orders.models';
 import { Subscription } from 'rxjs';
 import { CartService } from '../Services/cartServices/cart.service';
+import { ProductsService } from '../Services/productsServices/products.service';
 
 @Component({
   selector: 'app-orders',
@@ -15,7 +16,7 @@ export class OrdersComponent implements OnInit {
 
   constructor(
     private ordersService: OrdersService,
-    private cartService: CartService
+    private productsService: ProductsService
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +39,8 @@ export class OrdersComponent implements OnInit {
   deleteOrder(id: string) {
     this.ordersService.deleteOrder(id).subscribe({
       next: (response) => {
-        this.getOrders();
+        this.ordersService.orderModified.emit();
+        this.productsService.modifiedProductsList.emit();
       },
     });
   }

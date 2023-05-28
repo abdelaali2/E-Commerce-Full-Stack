@@ -10,7 +10,7 @@
           <div class="mb-4">
             <h5>Cart Item</h5>
             <p>Product: {{ item.product.name }}</p>
-            <p>Price: {{ item.product.price | currency }}</p>
+            <p>Price: {{ item.product.price | currency : "EGP" : true }}</p>
             <p>Quantity: {{ item.quantity }}</p>
             <button class="btn btn-danger" (click)="deleteCartItem(item.id)">
               Delete
