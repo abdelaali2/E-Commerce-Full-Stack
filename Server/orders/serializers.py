@@ -20,6 +20,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = (
+            "id",
             "user",
             "created_at",
             "updated_at",

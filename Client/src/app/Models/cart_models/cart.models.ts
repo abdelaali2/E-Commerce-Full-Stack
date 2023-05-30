@@ -1,6 +1,5 @@
-export interface ICart{
-    id: number;
-    created_at: string;
-    updated_at: string;
+export interface ICart {
+  id: string;
+  created_at: string;
+  updated_at: string;
 }
-
