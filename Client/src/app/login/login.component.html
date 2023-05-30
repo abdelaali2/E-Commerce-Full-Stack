@@ -1,17 +1,34 @@
-<!-- <div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Holy guacamole!</strong> You should check in on some of those fields below.
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div> -->
-
 <div class="login-container">
+    <div *ngIf="showInvalidInputWarning" class="alert alert-warning alert-dismissible fade show text-center"
+        role="alert">
+        <strong>Invalid Input!</strong> Please provide your credentials.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div *ngIf="responseError" class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+        <strong>{{responseError}}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
     <h1>Login</h1>
     <form (ngSubmit)="onSubmit()">
-        <label for="username">Username:</label>
-        <input type="text" id="username" [(ngModel)]="username" name="username" required>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" [(ngModel)]="password" name="password" required>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="username" [(ngModel)]="username" name="username"
+                placeholder="username" required>
+            <label for="username">Username</label>
+        </div>
+        <div class="form-floating password-container">
+            <input [type]="showPasswordOnPress? 'text' : 'password'" class="form-control" id="floatingPassword"
+                placeholder="Password" [(ngModel)]="password" name="password" required>
+            <label for="floatingPassword">Password</label>
+            <div (mousedown)="showPasswordOnPress = !showPasswordOnPress"
+                (mouseup)="showPasswordOnPress = !showPasswordOnPress">
+                <i class="bi bi-eye-slash" [class.d-none]="showPasswordOnPress"></i>
+                <i class="bi bi-eye" [class.d-none]="!showPasswordOnPress"></i>
+            </div>
+        </div>
 
-        <button type="submit">Login</button>
+        <button type="submit" id="submitBtn">Login</button>
     </form>
 </div>

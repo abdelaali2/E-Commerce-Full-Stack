@@ -1,8 +1,8 @@
-import { Component, SimpleChanges } from '@angular/core';
-import { GetLoggedInUserService } from '../Services/get-logged-in-user.service';
+import { Component } from '@angular/core';
+import { GetLoggedInUserService } from '../Services/userServices/get-logged-in-user.service';
 import { CookieService } from 'ngx-cookie-service';
-import { UserProfile, newUserProfile } from '../Models/user';
-import { LogoutService } from '../Services/logout.service';
+import { UserProfile } from '../Models/user';
+import { LogoutService } from '../Services/userServices/logout.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -19,8 +19,8 @@ export class HeaderComponent {
   ) {}
 
   loginFlag: boolean = false;
-
   loggedInUser!: UserProfile;
+  showLogoutErrorWarning: boolean = false;
 
   ngOnInit(): void {
     this.getLoggedInUserService.loggedInUser.subscribe((user) => {
@@ -40,16 +40,15 @@ export class HeaderComponent {
   }
 
   logout() {
-    // TODO: prompt the user to confirm the logout action
-    this.logoutService.logoutUser().subscribe(({ ok }) => {
-      if (ok) {
+    this.logoutService.logoutUser().subscribe({
+      next: () => {
         this.router.navigate(['']);
         this.getLoggedInUserService.resetUserProfile();
-      } else {
-        // TODO: handle wrong login credentials before redirection.
-        // TODO: enhance UI
-        alert(`couldn't log you out! Please try again`);
-      }
+      },
+      error: (err) => {
+        console.log("err", err);
+        this.showLogoutErrorWarning = true;
+      },
     });
   }
 }

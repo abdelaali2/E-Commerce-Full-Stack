@@ -13,18 +13,7 @@ form {
     justify-content: center;
 }
 
-label {
-    margin-top: 1rem;
-}
-
-input {
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    border-radius: 0.25rem;
-    border: 1px solid #ccc;
-}
-
-button {
+#submitBtn {
     margin-top: 1rem;
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
@@ -34,6 +23,21 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+#submitBtn:hover {
     background-color: #0069d9;
+}
+
+.password-container {
+    position: relative;
+    overflow: hidden;
+    min-width: 100%;
+
+    .bi {
+        position: absolute;
+        right: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.3rem;
+        padding-left: 20px;
+    }
 }

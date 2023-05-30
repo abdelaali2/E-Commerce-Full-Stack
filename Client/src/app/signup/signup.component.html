@@ -1,44 +1,109 @@
 <div class="container">
+    <div *ngIf="!passwordsMatchingFlag" class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+        <strong>Passwords Do not match!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div *ngIf="responseError" class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+        <strong>{{responseError}}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
     <h2>Signup</h2>
-    <form (ngSubmit)="onSubmit()" #signupForm="ngForm">
+    <form (ngSubmit)="signupForm.form.valid && onSubmit()" #signupForm="ngForm">
         <div class="form-group">
-            <label for="firstName">First Name</label>
+            <label for="firstName">First Name<span class="text-danger">*</span></label>
             <input type="text" class="form-control" id="firstName" name="firstName" [(ngModel)]="user.first_name"
-                required>
+                #firstName="ngModel" [ngClass]="{ 'is-invalid': signupForm.submitted && firstName.invalid }" required>
+            <div class="invalid-feedback" *ngIf="signupForm.submitted && firstName.invalid">
+                First Name is required
+            </div>
         </div>
         <div class="form-group">
-            <label for="lastName">Last Name</label>
-            <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="user.last_name" required>
+            <label for="lastName">Last Name<span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="user.last_name"
+                #lastName="ngModel" [ngClass]="{ 'is-invalid': signupForm.submitted && lastName.invalid }" required>
+            <div class="invalid-feedback" *ngIf="signupForm.submitted && lastName.invalid">
+                Last Name is required
+            </div>
         </div>
         <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email" [(ngModel)]="user.email" required>
+            <label for="email">Email<span class="text-danger">*</span></label>
+            <input type="email" class="form-control" id="email" name="email" [(ngModel)]="user.email" #email="ngModel"
+                [ngClass]="{ 'is-invalid': signupForm.submitted && email.invalid }" required>
+            <div class="invalid-feedback" *ngIf="signupForm.submitted && email.invalid">
+                Email is required
+            </div>
+        </div>
+
+        <label for="gender">Gender<span class="text-danger">*</span></label>
+        <div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="gender" id="male" value="Male"
+                    [(ngModel)]="user.gender" #gender="ngModel" required>
+                <label class="form-check-label" for="male">Male</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="gender" id="female" value="Female"
+                    [(ngModel)]="user.gender" #gender="ngModel" required>
+                <label class="form-check-label" for="female">Female</label>
+            </div>
+            <div class="invalid-feedback" *ngIf="signupForm.submitted && gender.invalid">
+                Gender is required
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="username">Username<span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="username" name="username" [(ngModel)]="user.username"
+                #username="ngModel" [ngClass]="{ 'is-invalid': signupForm.submitted && username.invalid }" required>
+            <div class="invalid-feedback" *ngIf="signupForm.submitted && username.invalid">
+                Username is required
+            </div>
         </div>
         <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" name="username" [(ngModel)]="user.username" required>
+            <label for="password" class="form-label">Password<span class="text-danger">*</span></label>
+            <input type="password" id="password" class="form-control" #password="ngModel"
+                [ngClass]="{'border border-3 border-danger': !passwordsMatchingFlag, 'is-invalid': signupForm.submitted && password.invalid }"
+                aria-labelledby="passwordHelpBlock" name="password" [(ngModel)]="user.password1" required>
+            <div class="invalid-feedback" *ngIf="signupForm.submitted && password.invalid">
+                Password is required
+            </div>
+            <div id="passwordHelpBlock" class="form-text">
+                Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces,
+                special
+                characters, or emoji.
+            </div>
         </div>
         <div class="form-group">
-            <label for="password1">Password</label>
-            <input type="password" class="form-control" id="password1" name="password1" [(ngModel)]="user.password1"
-                required>
-        </div>
-        <div class="form-group">
-            <label for="password2">Confirm Password</label>
+            <label for="password2">Confirm Password<span class="text-danger">*</span></label>
             <input type="password" class="form-control" id="password2" name="password2" [(ngModel)]="user.password2"
-                required>
+                #password2="ngModel"
+                [ngClass]="{'border border-3 border-danger': !passwordsMatchingFlag, 'is-invalid': signupForm.submitted && password2.invalid }"
+                [ngClass]="{'is-invalid': !passwordsMatchingFlag}" required>
+            <div class="invalid-feedback" *ngIf="signupForm.submitted && password2.invalid">
+                Password confirmation is required
+            </div>
         </div>
-        <div class="form-group">
-            <label for="profilePicture" class="d-block">Profile Picture
+        <div class="mb-3">
+            <label for="formFile" class="form-label">Profile Picture
                 <small>(max 5 MBs.)</small>
             </label>
-            <input type="file" class="form-control-file" id="profilePicture" name="profilePicture" accept="image/*"
-                maxFileSize="5242880" (change)="onFileSelected($event)">
+            <input class="form-control" type="file" id="formFile" accept="image/*" maxFileSize="5242880"
+                (change)="onFileSelected($event)">
         </div>
-        <div class="form-group">
-            <label for="is_dealer">Do you want to sell products with us?</label>
-            <input type="checkbox" class="mx-4" id="is_dealer" name="is_dealer" [(ngModel)]="user.is_dealer">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="is_dealer" name="is_dealer"
+                [(ngModel)]="user.is_dealer">
+            <label class="form-check-label" for="is_dealer">
+                Do you want to sell products with us?
+            </label>
         </div>
-        <button type="submit" class="btn btn-primary" [disabled]="!signupForm.form.valid">Signup</button>
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary mx-auto flex-grow-1 mt-2"
+                [disabled]="!signupForm.form.valid">Signup</button>
+        </div>
+        <small class="d-block mt-2 text-center">Fields marked with <span class="text-danger">*</span> are
+            required.</small>
     </form>
 </div>

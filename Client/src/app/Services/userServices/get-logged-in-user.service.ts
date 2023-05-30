@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { UserProfile, newUserProfile } from '../Models/user';
 import { HttpClient } from '@angular/common/http';
-import { httpOptions } from '../Models/http-options';
+import { UserProfile, newUserProfile } from 'src/app/Models/user';
+import { httpOptions } from 'src/app/Models/http-options';
 
 @Injectable({
   providedIn: 'root',

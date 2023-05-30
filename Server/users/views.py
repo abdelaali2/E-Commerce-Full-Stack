@@ -1,13 +1,16 @@
 import base64
+import os
+from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.middleware import csrf
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.forms import AuthenticationForm
 from rest_framework.decorators import api_view, permission_classes
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, get_user_model
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.sessions.models import Session
+from django.contrib.sessions.backends.db import SessionStore
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 from .models import CustomUser
 from .serializers import CustomUserCreationForm
@@ -44,7 +47,7 @@ def login_view(request):
         response["Access-Control-Allow-Credentials"] = "true"
         return response
     else:
-        return JsonResponse({"error": form.errors})
+        return JsonResponse({"error": form.errors}, status=400)
 
 
 @api_view(["POST"])
@@ -80,6 +83,7 @@ def signup(request):
 def update_user(request):
     user = request.user
     form = CustomUserChangeForm(request.POST, request.FILES, instance=user)
+    print("request.POST", request.POST, request.user)
     if form.is_valid():
         form.save()
         return JsonResponse({}, status=204)
@@ -90,8 +94,24 @@ def update_user(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_user_data(request):
+    print("/*/*/*/*/*/*/*/*///////*****", request)
+    print("request=============>", request.user)
+    # Extract the session ID from the request
     sessionid = request.COOKIES.get("sessionid")
 
+    # # Create a session store using the session ID
+    # session_store = SessionStore(session_key=sessionid)
+
+    # # Decode the session data to get the user ID
+    # user_id = session_store.get("_auth_user_id")
+
+    # # Use the user ID to get the user object
+    # User = get_user_model()
+    # user = User.objects.get(pk=user_id)
+
+    # # Do something with the user object
+    # # ...
+    # print("session==========>", user)
     try:
         session = Session.objects.get(session_key=sessionid)
     except Session.DoesNotExist:
@@ -111,9 +131,28 @@ def get_user_data(request):
         return JsonResponse({"error": "Invalid user ID"}, status=400)
 
     # Return the user profile
-    if user.profile_picture:
-        with open(user.profile_picture.path, "rb") as f:
-            encoded_picture = base64.b64encode(f.read()).decode("utf-8")
+    encoded_picture = None
+    # if user.profile_picture:
+    #     with open(user.profile_picture.path, "rb") as f:
+    #         encoded_picture = base64.b64encode(f.read()).decode("utf-8")
+    # else:
+    #     default_profile_picture = None
+    #     if user.gender == "Male":
+    #         default_profile_picture = os.path.join(
+    #             settings.BASE_DIR, "media", "default_male_profile_picture.png"
+    #         )
+    #     elif user.gender == "Female":
+    #         default_profile_picture = os.path.join(
+    #             settings.BASE_DIR, "media", "default_female_profile_picture.png"
+    #         )
+    #     print("Using default profile Picture: ", default_profile_picture)
+    #     with open(default_profile_picture, "rb") as f:
+    #         encoded_picture = base64.b64encode(f.read()).decode("utf-8")
+
+    print(
+        "===================>",
+        os.path.join(settings.BASE_DIR, "media", "default_male_profile_picture.png"),
+    )
     user_profile = {
         "id": user.id,
         "email": user.email,

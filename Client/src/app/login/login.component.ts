@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
-import { LoginService } from '../Services/login.service';
 import { Router } from '@angular/router';
-import { GetLoggedInUserService } from '../Services/get-logged-in-user.service';
-import { UserProfile } from '../Models/user';
+import { Component } from '@angular/core';
+import { LoginService } from '../Services/userServices/login.service';
+import { GetLoggedInUserService } from '../Services/userServices/get-logged-in-user.service';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +11,9 @@ import { UserProfile } from '../Models/user';
 export class LoginComponent {
   username: string = 'ibrahim';
   password: string = 'P@ssw0rd11';
+  showPasswordOnPress: boolean = false;
+  showInvalidInputWarning: boolean = false;
+  responseError!: string;
 
   constructor(
     private loginService: LoginService,
@@ -21,15 +23,18 @@ export class LoginComponent {
 
   onSubmit() {
     const user = { username: this.username, password: this.password };
-    this.loginService.login(user).subscribe(({ ok, body }) => {
-      if (ok) {
-        this.router.navigate(['']);
+    if (!user.username || !user.password) {
+      this.showInvalidInputWarning = true;
+      return;
+    }
+    this.loginService.login(user).subscribe({
+      next: () => {
         this.getLoggedInUserService.getUserProfile();
-      } else {
-        // TODO: handle wrong login credentials before redirection.
-        // TODO: enhance UI
-        alert('Invalid username or password');
-      }
+        this.router.navigate(['']);
+      },
+      error: (err) => {
+        this.responseError = err.error.error.__all__[0];
+      },
     });
   }
 }

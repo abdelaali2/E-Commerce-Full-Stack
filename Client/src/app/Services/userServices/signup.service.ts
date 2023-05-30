@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { User } from '../Models/user';
-import { httpOptions } from '../Models/http-options';
+import { User } from '../../Models/user';
+import { httpOptions } from '../../Models/http-options';
 
 @Injectable({
   providedIn: 'root',

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { httpOptions } from '../Models/http-options';
+import { httpOptions } from 'src/app/Models/http-options';
 
 @Injectable({
   providedIn: 'root',

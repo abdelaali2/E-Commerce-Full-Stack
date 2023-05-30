@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { httpOptions } from '../Models/http-options';
 import { CookieService } from 'ngx-cookie-service';
+import { httpOptions } from 'src/app/Models/http-options';
 
 @Injectable({
   providedIn: 'root',

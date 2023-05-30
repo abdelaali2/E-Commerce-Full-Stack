@@ -18,7 +18,7 @@ import { CartComponent } from './cart/cart.component';
 // Services
 import { CookieService } from 'ngx-cookie-service';
 import { LoggingInterceptor } from './Interceptors/HttpInterceptor';
-import { GetLoggedInUserService } from './Services/get-logged-in-user.service';
+import { GetLoggedInUserService } from './Services/userServices/get-logged-in-user.service';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { CapitalizeFirstLetterPipe } from './Pipes/capitalize-first-letter';
 import { UserOrdersComponent } from './user-orders/user-orders.component';

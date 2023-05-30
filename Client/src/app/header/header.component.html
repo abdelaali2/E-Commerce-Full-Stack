@@ -42,11 +42,34 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" routerLink="/user/my-profile">Profile</a>
-                            <a class="dropdown-item" (click)="logout()">Sign Out</a>
+                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal">Sign Out</a>
                         </div>
                     </li>
                 </ul>
+                <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="logoutModalLabel">Are you sure you want to sign out?
+                                </h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button data-bs-dismiss="modal" type="button" class="btn btn-primary"
+                                    (click)="logout()">Sign out</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </ng-template>
         </div>
     </div>
 </nav>
+
+<div *ngIf="showLogoutErrorWarning" class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+    <strong>Couldn't log you out!</strong> Please try again.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>

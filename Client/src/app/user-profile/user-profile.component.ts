@@ -1,7 +1,12 @@
 import { Component } from '@angular/core';
-import { GetLoggedInUserService } from '../Services/get-logged-in-user.service';
-import { UserProfile, newUserProfile } from '../Models/user';
+import { GetLoggedInUserService } from '../Services/userServices/get-logged-in-user.service';
+import {
+  UserProfile,
+  newUserProfile,
+  updatedUserProfile,
+} from '../Models/user';
 import { map } from 'rxjs';
+import { UpdateUserServiceService } from '../Services/userServices/update-user-service.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -9,10 +14,13 @@ import { map } from 'rxjs';
   styleUrls: ['./user-profile.component.scss'],
 })
 export class UserProfileComponent {
-  constructor(private getUserService: GetLoggedInUserService) {}
+  constructor(
+    private getUserService: GetLoggedInUserService,
+    private updateUserService: UpdateUserServiceService
+  ) {}
 
   currentUser!: UserProfile;
-  updatedUser!: UserProfile;
+  updatedUser: updatedUserProfile = {};
   loginFlag: boolean = false;
   showEditSection: boolean = true;
 
@@ -39,5 +47,26 @@ export class UserProfileComponent {
     this.updatedUser.profile_picture = event.target.files[0];
   }
 
-  onSubmitChanges() {}
+  onSubmitChanges(event: any) {
+    const { 0: firstName, 1: lastName, 2: email, 3: username } = event.target;
+
+    if (firstName.value) {
+      this.updatedUser.firstName = firstName.value;
+    }
+    if (lastName.value) {
+      this.updatedUser.lastName = lastName.value;
+    }
+    if (username.value) {
+      this.updatedUser.username = username.value;
+    }
+    if (email.value) {
+      this.updatedUser.email = email.value;
+    }
+
+    this.updateUserService
+      .updateUser(this.updatedUser)
+      .subscribe((response) => {
+        console.log('response', response);
+      });
+  }
 }
